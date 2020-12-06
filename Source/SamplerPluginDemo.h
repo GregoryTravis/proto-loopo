@@ -2546,10 +2546,63 @@ private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessorEditor)
     };
 
+    AudioBuffer<float> *readLoop(const String &filename) {
+      // TODO should I only create one? yes
+      AudioFormatManager manager;
+      manager.registerBasicFormats();
+
+      juce::File file(filename);
+      jassert (file.existsAsFile());
+      //auto is = file.createInputStream();
+
+      // TODO Nothing deallocates this; 'delete' is not used once here
+      AudioFormatReader *afr = manager.createReaderFor(file);
+      juce::Logger::getCurrentLogger()->writeToLog(
+          "Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples));
+
+      jassert(afr->numChannels == 2);
+      // TODO assert not bigger than max int
+      int numSamples = (int)afr->lengthInSamples;
+      AudioBuffer<float> *ab = new AudioBuffer<float>(afr->numChannels, numSamples);
+      afr->read(ab, 0, numSamples, 0, true, true);
+      return ab;
+    }
+
     //==============================================================================
     template <typename Element>
     void process (AudioBuffer<Element>& buffer, MidiBuffer& midiMessages)
     {
+        jassert(getTotalNumInputChannels() == 0);
+        jassert(getTotalNumOutputChannels() == 2);
+        jassert(getMainBusNumInputChannels() == 0);
+        jassert(getMainBusNumOutputChannels() == 2);
+
+        //auto myLoop = readLoop("/Users/gmt/Loopo/loop.wav");
+
+        /*
+        if (auto inputStream = createAssetInputStream ("cello.wav"))
+        {
+            inputStream->readIntoMemoryBlock (mb);
+            readerFactory.reset (new MemoryAudioFormatReaderFactory (mb.getData(), mb.getSize()));
+        }
+
+        // Set up initial sample, which we load from a binary resource
+        AudioFormatManager manager;
+        manager.registerBasicFormats();
+        auto reader = readerFactory->make (manager);
+        jassert (reader != nullptr); // Failed to load resource!
+
+        auto sound = samplerSound;
+        auto sample = std::unique_ptr<Sample> (new Sample (*reader, 10.0));
+        auto lengthInSeconds = sample->getLength() / sample->getSampleRate();
+        sound->setLoopPointsInSeconds ({lengthInSeconds * 0.1, lengthInSeconds * 0.9 });
+        sound->setSample (move (sample));
+
+         */
+
+        /* juce::Logger::getCurrentLogger()->writeToLog("in " + std::to_string(getTotalNumInputChannels()) + " out " + */
+        /*     std::to_string(getTotalNumOutputChannels()) + " mb in " + std::to_string(getMainBusNumInputChannels()) + " mb out " + std::to_string(getMainBusNumOutputChannels())); */
+
         // Try to acquire a lock on the command queue.
         // If we were successful, we pop all pending commands off the queue and
         // apply them to the processor.
