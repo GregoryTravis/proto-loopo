@@ -2579,6 +2579,10 @@ private:
       return ab;
     }
 
+    bool supportsDoublePrecisionProcessing() const override {
+      return false;
+    }
+
     //==============================================================================
     void processFloat (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
     {
