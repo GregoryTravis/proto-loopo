@@ -2130,6 +2130,13 @@ public:
         // Start with the max number of voices
         for (auto i = 0; i != maxVoices; ++i)
             synthesiser.addVoice (new MPESamplerVoice (sound));
+        myLoop = readLoop("/Users/gmt/Loopo/loop.wav");
+        myLoopPosition = 0;
+    }
+
+    // TODO get rid of this
+    ~SamplerAudioProcessor() {
+      delete myLoop;
     }
 
     void prepareToPlay (double sampleRate, int) override
@@ -2194,6 +2201,7 @@ public:
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi) override
     {
         process (buffer, midi);
+        processFloat(buffer, midi);
     }
 
     void processBlock (AudioBuffer<double>& buffer, MidiBuffer& midi) override
@@ -2546,6 +2554,7 @@ private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessorEditor)
     };
 
+    // TODO should be static
     AudioBuffer<float> *readLoop(const String &filename) {
       // TODO should I only create one? yes
       AudioFormatManager manager;
@@ -2565,44 +2574,69 @@ private:
       int numSamples = (int)afr->lengthInSamples;
       AudioBuffer<float> *ab = new AudioBuffer<float>(afr->numChannels, numSamples);
       afr->read(ab, 0, numSamples, 0, true, true);
+      // TODO bad?
+      delete afr;
       return ab;
     }
 
     //==============================================================================
-    template <typename Element>
-    void process (AudioBuffer<Element>& buffer, MidiBuffer& midiMessages)
+    void processFloat (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
     {
         jassert(getTotalNumInputChannels() == 0);
         jassert(getTotalNumOutputChannels() == 2);
         jassert(getMainBusNumInputChannels() == 0);
         jassert(getMainBusNumOutputChannels() == 2);
 
-        //auto myLoop = readLoop("/Users/gmt/Loopo/loop.wav");
 
-        /*
-        if (auto inputStream = createAssetInputStream ("cello.wav"))
+// copyFrom (int destChannel, int destStartSample, const AudioBuffer &source, int sourceChannel, int sourceStartSample, int numSamples) noexcept
         {
-            inputStream->readIntoMemoryBlock (mb);
-            readerFactory.reset (new MemoryAudioFormatReaderFactory (mb.getData(), mb.getSize()));
+          // The buffer is probably smaller than the loop, but it might be much larger (eg if the loop is small).
+          // We have already produced 'myLoopPosition' samples from the loop, so we are starting after that.
+          // We copy from there to the end, or to the end of the output buffer, whichever is first.
+          // If we used the rest of the loop, we reset 'myLoopPosition' to 0, and possibly loop around to copy more.
+          // 'myLoopPosition' will be < the size of the loop, unless we used the whole thing and might possible wrap around,
+          // in which case it will be == the size of the loop. It should never be > the size of the loop.
+          int numSamplesRemaining = buffer.getNumSamples();
+          while (numSamplesRemaining > 0) {
+            // How many samples after the current next sample (myLoopPosition)
+            // should we copy? The max is whatever is left after that point:
+            int myLoopSamplesRemaining = myLoop->getNumSamples() - myLoopPosition;
+
+            // We know how many samples we have left to write, that tells us where to start writing
+            int outputBufferPosition = buffer.getNumSamples() - numSamplesRemaining;
+
+            // But it shouldn't be more than what can fit in the output buffer
+            int samplesToCopy = std::min(myLoopSamplesRemaining, numSamplesRemaining);
+
+            jassert(outputBufferPosition >= 0 && outputBufferPosition < buffer.getNumSamples());
+            juce::Logger::getCurrentLogger()->writeToLog(
+                "Write: myLoopPosition " + std::to_string(myLoopPosition) + " samplesToCopy " + std::to_string(samplesToCopy) +
+                " outputBufferPosition " + std::to_string(outputBufferPosition) + " output len " + std::to_string(buffer.getNumSamples()) +
+                " loop len " + std::to_string(myLoop->getNumSamples()));
+            buffer.copyFrom(0, outputBufferPosition, *myLoop, 0, myLoopPosition, samplesToCopy);
+            buffer.copyFrom(1, outputBufferPosition, *myLoop, 1, myLoopPosition, samplesToCopy);
+
+            // If we used up the rest of the loop, we'll likely have more to copy and this will be >0.
+            numSamplesRemaining -= samplesToCopy;
+            myLoopPosition += samplesToCopy;
+
+            // Sanity check
+            jassert((outputBufferPosition + samplesToCopy + numSamplesRemaining) == buffer.getNumSamples());
+
+            // == in the case that we used the rest of the loop
+            jassert(myLoopPosition <= myLoop->getNumSamples());
+
+            // If we did use the rest of the loop, wrap around. We might have more to copy, or we might not.
+            if (myLoopPosition == myLoop->getNumSamples()) {
+              myLoopPosition = 0;
+            }
+          }
         }
+    }
 
-        // Set up initial sample, which we load from a binary resource
-        AudioFormatManager manager;
-        manager.registerBasicFormats();
-        auto reader = readerFactory->make (manager);
-        jassert (reader != nullptr); // Failed to load resource!
-
-        auto sound = samplerSound;
-        auto sample = std::unique_ptr<Sample> (new Sample (*reader, 10.0));
-        auto lengthInSeconds = sample->getLength() / sample->getSampleRate();
-        sound->setLoopPointsInSeconds ({lengthInSeconds * 0.1, lengthInSeconds * 0.9 });
-        sound->setSample (move (sample));
-
-         */
-
-        /* juce::Logger::getCurrentLogger()->writeToLog("in " + std::to_string(getTotalNumInputChannels()) + " out " + */
-        /*     std::to_string(getTotalNumOutputChannels()) + " mb in " + std::to_string(getMainBusNumInputChannels()) + " mb out " + std::to_string(getMainBusNumOutputChannels())); */
-
+    template <typename Element>
+    void process (AudioBuffer<Element>& buffer, MidiBuffer& midiMessages)
+    {
         // Try to acquire a lock on the command queue.
         // If we were successful, we pop all pending commands off the queue and
         // apply them to the processor.
@@ -2614,7 +2648,7 @@ private:
         if (lock.isLocked())
             commands.call (*this);
 
-        synthesiser.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
+        // synthesiser.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
 
         auto loadedSamplerSound = samplerSound;
 
@@ -2635,6 +2669,9 @@ private:
         }
 
     }
+
+    juce::AudioBuffer<float> *myLoop;
+    int myLoopPosition;
 
     CommandFifo<SamplerAudioProcessor> commands;
 
