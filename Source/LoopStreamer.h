@@ -17,7 +17,7 @@ public:
   // buffer, where n is the destination buffer's length. Advances the current
   // position so that the next write takes up where this one left off.
   //
-  // The output buffer must have at least two channels, and we only write to two.
+  // The dest buffer must have at least two channels, and we only write to two.
   void stream(juce::AudioBuffer<float> &dest) {
     jassert(dest.getNumChannels() >= 2);
 
@@ -36,28 +36,28 @@ public:
     while (numSamplesRemaining > 0) {
       // How many samples after the current next sample (currentPosition)
       // should we copy? The max is whatever is left after that point:
-      int myLoopSamplesRemaining = loop->getNumSamples() - currentPosition;
+      int loopSamplesRemaining = loop->getNumSamples() - currentPosition;
 
       // We know how many samples we have left to write, that tells us where to start writing
-      int outputBufferPosition = dest.getNumSamples() - numSamplesRemaining;
+      int destBufferPosition = dest.getNumSamples() - numSamplesRemaining;
 
-      // But it shouldn't be more than what can fit in the output buffer
-      int samplesToCopy = std::min(myLoopSamplesRemaining, numSamplesRemaining);
+      // But it shouldn't be more than what can fit in the dest buffer
+      int samplesToCopy = std::min(loopSamplesRemaining, numSamplesRemaining);
 
-      jassert(outputBufferPosition >= 0 && outputBufferPosition < dest.getNumSamples());
+      jassert(destBufferPosition >= 0 && destBufferPosition < dest.getNumSamples());
       juce::Logger::getCurrentLogger()->writeToLog(
           "Write: currentPosition " + std::to_string(currentPosition) + " samplesToCopy " + std::to_string(samplesToCopy) +
-          " outputBufferPosition " + std::to_string(outputBufferPosition) + " output len " + std::to_string(dest.getNumSamples()) +
+          " destBufferPosition " + std::to_string(destBufferPosition) + " dest len " + std::to_string(dest.getNumSamples()) +
           " loop len " + std::to_string(loop->getNumSamples()));
-      dest.copyFrom(0, outputBufferPosition, *loop, 0, currentPosition, samplesToCopy);
-      dest.copyFrom(1, outputBufferPosition, *loop, 1, currentPosition, samplesToCopy);
+      dest.copyFrom(0, destBufferPosition, *loop, 0, currentPosition, samplesToCopy);
+      dest.copyFrom(1, destBufferPosition, *loop, 1, currentPosition, samplesToCopy);
 
       // If we used up the rest of the loop, we'll likely have more to copy and this will be >0.
       numSamplesRemaining -= samplesToCopy;
       currentPosition += samplesToCopy;
 
       // Sanity check
-      jassert((outputBufferPosition + samplesToCopy + numSamplesRemaining) == dest.getNumSamples());
+      jassert((destBufferPosition + samplesToCopy + numSamplesRemaining) == dest.getNumSamples());
 
       // == in the case that we used the rest of the loop
       jassert(currentPosition <= loop->getNumSamples());
