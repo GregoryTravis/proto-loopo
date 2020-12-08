@@ -1,22 +1,6 @@
 #ifndef LOOP_STREAMER
 #define LOOP_STREAMER
 
-//#pragma once
-
-//#include <JuceHeader.h>
-
-#include "DemoUtilities.h"
-
-#include <array>
-#include <atomic>
-#include <memory>
-#include <vector>
-#include <tuple>
-#include <iomanip>
-#include <sstream>
-#include <functional>
-#include <mutex>
-
 // LoopStreamer writes successive segments of a repeating audio loop into an AudioBuffer.
 // Does not take ownership of the supplied AudioBuffer.
 // It's fine to make a lot of these, they're very cheap.
