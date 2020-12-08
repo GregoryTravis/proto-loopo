@@ -8,11 +8,12 @@
               jucerFormatVersion="1">
   <MAINGROUP id="T0BEGZ" name="Loopo">
     <GROUP id="{4860042C-F3C1-D061-E818-CC6BFA69682D}" name="Source">
-      <FILE id="N6e5ek" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="UoEYKq" name="SamplerPluginDemo.h" compile="0" resource="0"
             file="Source/SamplerPluginDemo.h"/>
+      <FILE id="N6e5ek" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
     <GROUP id="l6AlhV" name="Assets">
+      <FILE id="UVp2h9" name="LoopStreamer.h" compile="0" resource="0" file="Source/LoopStreamer.h"/>
       <FILE id="bP2PR4" name="DemoUtilities.h" compile="0" resource="0" file="Source/DemoUtilities.h"/>
     </GROUP>
   </MAINGROUP>
