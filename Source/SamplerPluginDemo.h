@@ -2132,14 +2132,17 @@ public:
         for (auto i = 0; i != maxVoices; ++i)
             synthesiser.addVoice (new MPESamplerVoice (sound));
         myLoop = readLoop("/Users/gmt/Loopo/loop.wav");
-        //myLoopPosition = 0;
         myLoopStreamer = new LoopStreamer(myLoop);
+        myLoop2 = readLoop("/Users/gmt/Loopo/loop2.wav");
+        myLoopStreamer2 = new LoopStreamer(myLoop2);
     }
 
     // TODO get rid of this
     ~SamplerAudioProcessor() {
       delete myLoopStreamer;
       delete myLoop;
+      delete myLoopStreamer2;
+      delete myLoop2;
     }
 
     void prepareToPlay (double sampleRate, int) override
@@ -2594,7 +2597,8 @@ private:
         jassert(getMainBusNumInputChannels() == 0);
         jassert(getMainBusNumOutputChannels() == 2);
 
-        myLoopStreamer->stream(buffer);
+        //myLoopStreamer->stream(buffer);
+        myLoopStreamer2->stream(buffer);
 
 #if 0
 // copyFrom (int destChannel, int destStartSample, const AudioBuffer &source, int sourceChannel, int sourceStartSample, int numSamples) noexcept
@@ -2682,6 +2686,8 @@ private:
 
     juce::AudioBuffer<float> *myLoop;
     LoopStreamer *myLoopStreamer;
+    juce::AudioBuffer<float> *myLoop2;
+    LoopStreamer *myLoopStreamer2;
     //int myLoopPosition;
 
     CommandFifo<SamplerAudioProcessor> commands;
