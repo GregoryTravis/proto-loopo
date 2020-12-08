@@ -556,6 +556,7 @@
 			isa = PBXGroup;
 			children = (
 				94DBCCADD71BE5A7766CB83F,
+				8176CEFABAE6BDD93C868AE2,
 				EDB2DD5CB2C92C287D1409C3,
 			);
 			name = Source;
@@ -564,7 +565,6 @@
 		6F8BEB95CF785B5288687A3F = {
 			isa = PBXGroup;
 			children = (
-				8176CEFABAE6BDD93C868AE2,
 				1A3B2E403729EC6BFAEABCFF,
 			);
 			name = Assets;
