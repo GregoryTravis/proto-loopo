@@ -5,6 +5,7 @@
 // Does not take ownership of the supplied AudioBuffer.
 // It's fine to make a lot of these, they're very cheap.
 // Only supports stereo.
+// Mixes the audio onto the dest using addFrom(); if your buffer contains junk, .clear() it first.
 class LoopStreamer {
 public:
   LoopStreamer(juce::AudioBuffer<float> *theLoop)
@@ -18,6 +19,8 @@ public:
   // position so that the next write takes up where this one left off.
   //
   // The dest buffer must have at least two channels, and we only write to two.
+  //
+  // Mixes the audio onto the dest using addFrom(); if your buffer contains junk, .clear() it first.
   void stream(juce::AudioBuffer<float> &dest) {
     jassert(dest.getNumChannels() >= 2);
 
@@ -49,8 +52,8 @@ public:
           "Write: currentPosition " + std::to_string(currentPosition) + " samplesToCopy " + std::to_string(samplesToCopy) +
           " destBufferPosition " + std::to_string(destBufferPosition) + " dest len " + std::to_string(dest.getNumSamples()) +
           " loop len " + std::to_string(loop->getNumSamples()));
-      dest.copyFrom(0, destBufferPosition, *loop, 0, currentPosition, samplesToCopy);
-      dest.copyFrom(1, destBufferPosition, *loop, 1, currentPosition, samplesToCopy);
+      dest.addFrom(0, destBufferPosition, *loop, 0, currentPosition, samplesToCopy);
+      dest.addFrom(1, destBufferPosition, *loop, 1, currentPosition, samplesToCopy);
 
       // If we used up the rest of the loop, we'll likely have more to copy and this will be >0.
       numSamplesRemaining -= samplesToCopy;

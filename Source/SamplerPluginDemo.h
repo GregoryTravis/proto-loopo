@@ -2597,7 +2597,8 @@ private:
         jassert(getMainBusNumInputChannels() == 0);
         jassert(getMainBusNumOutputChannels() == 2);
 
-        //myLoopStreamer->stream(buffer);
+        buffer.clear();
+        myLoopStreamer->stream(buffer);
         myLoopStreamer2->stream(buffer);
 
 #if 0
