@@ -142,8 +142,9 @@ public:
     int desiredLength = 44100.0 * 4.0 * (60.0 / ((double)bpm));
     juce::Logger::getCurrentLogger()->writeToLog("bpm " + std::to_string(bpm) + " len " + std::to_string(desiredLength));
 
-    abs = readLoopDir(dirName);
+    std::vector<AudioBuffer<float>*> *abs = readLoopDir(dirName);
     streamers = new std::vector<LoopStreamer*>();
+    ons = new std::vector<bool>(abs->size(), false);
 
     std::vector<AudioBuffer<float>*> *resampledAbs = new std::vector<AudioBuffer<float>*>();
     for (AudioBuffer<float> *ab : *abs) {
@@ -161,27 +162,50 @@ public:
     delete abs;
   }
 
+  void update(juce::MidiMessage &m) {
+    if (!(m.isNoteOnOrOff())) {
+      return;
+    }
+    int note = m.getNoteNumber();
+    int index = note - firstNote;
+    if (index < 0 || index >= ons->size()) {
+      return;
+    }
+    (*ons)[index] = m.isNoteOn();
+    juce::Logger::getCurrentLogger()->writeToLog("flip " + std::to_string(index) + " " + std::to_string((*ons)[index]));
+  }
+
   ~LoopBank() {
-    for (AudioBuffer<float> *ab : *abs) {
+    for (AudioBuffer<float> *ab : *resampledAbs) {
       delete ab;
     }
-    delete abs;
+    delete resampledAbs;
     for (LoopStreamer *ls : *streamers) {
       delete ls;
     }
     delete streamers;
+    delete ons;
   }
 
   void stream(AudioBuffer<float> &dest) {
     dest.clear();
-    for (LoopStreamer *ls : *streamers) {
-      ls->stream(dest);
+    for (int i = 0; i < streamers->size(); ++i) {
+      if ((*ons)[i]) {
+        (*streamers)[i]->stream(dest);
+      } else {
+        (*streamers)[i]->advance(dest.getNumSamples());
+      }
     }
+    /* for (LoopStreamer *ls : *streamers) { */
+    /*   ls->stream(dest); */
+    /* } */
   }
 
 private:
-  std::vector<AudioBuffer<float>*> *abs;
+  std::vector<AudioBuffer<float>*> *resampledAbs;
   std::vector<LoopStreamer*> *streamers;
+  std::vector<bool> *ons;
+  const int firstNote = 72;
 };
 
 namespace IDs
@@ -2709,52 +2733,14 @@ private:
         /* myLoopStreamer3->stream(buffer); */
         loopBank->stream(buffer);
 
-#if 0
-// copyFrom (int destChannel, int destStartSample, const AudioBuffer &source, int sourceChannel, int sourceStartSample, int numSamples) noexcept
-        {
-          // The buffer is probably smaller than the loop, but it might be much larger (eg if the loop is small).
-          // We have already produced 'myLoopPosition' samples from the loop, so we are starting after that.
-          // We copy from there to the end, or to the end of the output buffer, whichever is first.
-          // If we used the rest of the loop, we reset 'myLoopPosition' to 0, and possibly loop around to copy more.
-          // 'myLoopPosition' will be < the size of the loop, unless we used the whole thing and might possible wrap around,
-          // in which case it will be == the size of the loop. It should never be > the size of the loop.
-          int numSamplesRemaining = buffer.getNumSamples();
-          while (numSamplesRemaining > 0) {
-            // How many samples after the current next sample (myLoopPosition)
-            // should we copy? The max is whatever is left after that point:
-            int myLoopSamplesRemaining = myLoop->getNumSamples() - myLoopPosition;
-
-            // We know how many samples we have left to write, that tells us where to start writing
-            int outputBufferPosition = buffer.getNumSamples() - numSamplesRemaining;
-
-            // But it shouldn't be more than what can fit in the output buffer
-            int samplesToCopy = std::min(myLoopSamplesRemaining, numSamplesRemaining);
-
-            jassert(outputBufferPosition >= 0 && outputBufferPosition < buffer.getNumSamples());
-            /* juce::Logger::getCurrentLogger()->writeToLog( */
-            /*     "Write: myLoopPosition " + std::to_string(myLoopPosition) + " samplesToCopy " + std::to_string(samplesToCopy) + */
-            /*     " outputBufferPosition " + std::to_string(outputBufferPosition) + " output len " + std::to_string(buffer.getNumSamples()) + */
-            /*     " loop len " + std::to_string(myLoop->getNumSamples())); */
-            buffer.copyFrom(0, outputBufferPosition, *myLoop, 0, myLoopPosition, samplesToCopy);
-            buffer.copyFrom(1, outputBufferPosition, *myLoop, 1, myLoopPosition, samplesToCopy);
-
-            // If we used up the rest of the loop, we'll likely have more to copy and this will be >0.
-            numSamplesRemaining -= samplesToCopy;
-            myLoopPosition += samplesToCopy;
-
-            // Sanity check
-            jassert((outputBufferPosition + samplesToCopy + numSamplesRemaining) == buffer.getNumSamples());
-
-            // == in the case that we used the rest of the loop
-            jassert(myLoopPosition <= myLoop->getNumSamples());
-
-            // If we did use the rest of the loop, wrap around. We might have more to copy, or we might not.
-            if (myLoopPosition == myLoop->getNumSamples()) {
-              myLoopPosition = 0;
-            }
-          }
+        int time;
+        juce::MidiMessage m;
+     
+        for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);) {
+          juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());
+          loopBank->update(m);
         }
-#endif
+        midiMessages.clear();
     }
 
     template <typename Element>

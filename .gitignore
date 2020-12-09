@@ -2,6 +2,7 @@ JuceLibraryCode
 Builds/MacOSX/build
 .DS_Store
 Builds/VisualStudio2019
+Builds/MacOSX/Loopo.xcodeproj/xcuserdata/gmt.xcuserdatad/xcdebugger/
 *.wav
 todo.txt
 notes.txt
