@@ -61,6 +61,129 @@
 #include <functional>
 #include <mutex>
 
+
+// TODO should be a function
+AudioBuffer<float> *readLoop(const String &filename) {
+  juce::Logger::getCurrentLogger()->writeToLog("Reading " + filename);
+
+  // TODO should I only create one? yes
+  AudioFormatManager manager;
+  manager.registerBasicFormats();
+
+  juce::File file(filename);
+  jassert (file.existsAsFile());
+  //auto is = file.createInputStream();
+
+  // TODO Nothing deallocates this; 'delete' is not used once here
+  AudioFormatReader *afr = manager.createReaderFor(file);
+  juce::Logger::getCurrentLogger()->writeToLog(
+      "Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples));
+
+  jassert(afr->numChannels == 2);
+  // TODO assert not bigger than max int
+  int numSamples = (int)afr->lengthInSamples;
+  AudioBuffer<float> *ab = new AudioBuffer<float>(afr->numChannels, numSamples);
+  afr->read(ab, 0, numSamples, 0, true, true);
+  // TODO bad?
+  delete afr;
+  return ab;
+}
+
+AudioBuffer<float> *readLoop(const File &file) {
+  return readLoop(file.getFullPathName());
+}
+
+std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
+  std::vector<AudioBuffer<float>*> *abs = new std::vector<AudioBuffer<float>*>();
+   
+  for (DirectoryEntry entry : RangedDirectoryIterator (File(dirname), false)) {
+    abs->push_back(readLoop(entry.getFile()));
+  }
+
+  return abs;
+}
+
+std::vector<AudioBuffer<float>*> *readLoops(const std::vector<File> &files) {
+  std::vector<AudioBuffer<float>*> *abs = new std::vector<AudioBuffer<float>*>();
+  //abs->resize(files.size());
+  //std::transform(files.begin(), files.end(), abs->begin(), readLoop);
+  for (File file : files) {
+    abs->push_back(readLoop(file));
+  }
+  return abs;
+}
+
+// TODO should be a function
+AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
+  // TODO handle more cases
+  jassert(inbuf.getNumChannels() == 2);
+  jassert(outNumSamples > 0);
+  auto outbuf = new AudioBuffer<float>(2, outNumSamples);
+  WindowedSincInterpolator interpolator;
+  interpolator.reset();
+  // 2 in 1 out -> speedRatio = 2
+  double speedRatio = ((double)inbuf.getNumSamples()) / ((double)outbuf->getNumSamples());
+  for (int c = 0; c < 2; ++c) {
+    auto numInputSamplesRead = interpolator.process(speedRatio,
+        inbuf.getReadPointer(c),
+        outbuf->getWritePointer(c),
+        outbuf->getNumSamples());
+    juce::Logger::getCurrentLogger()->writeToLog(
+        "Resamp input len " + std::to_string(inbuf.getNumSamples()) + " output len " + std::to_string(outbuf->getNumSamples()) +
+          " num read " + std::to_string(numInputSamplesRead));
+  }
+  return outbuf;
+}
+
+// Keeps ownership of the ABs
+class LoopBank {
+public:
+  LoopBank(const String dirName, const int bpm) {
+    int desiredLength = 44100.0 * 4.0 * (60.0 / ((double)bpm));
+    juce::Logger::getCurrentLogger()->writeToLog("bpm " + std::to_string(bpm) + " len " + std::to_string(desiredLength));
+
+    abs = readLoopDir(dirName);
+    streamers = new std::vector<LoopStreamer*>();
+
+    std::vector<AudioBuffer<float>*> *resampledAbs = new std::vector<AudioBuffer<float>*>();
+    for (AudioBuffer<float> *ab : *abs) {
+      auto resampledAb = resample(*ab, desiredLength);
+      resampledAbs->push_back(resampledAb);
+    }
+
+    for (AudioBuffer<float> *ab : *resampledAbs) {
+      streamers->push_back(new LoopStreamer(ab));
+    }
+
+    for (AudioBuffer<float> *ab : *abs) {
+      delete ab;
+    }
+    delete abs;
+  }
+
+  ~LoopBank() {
+    for (AudioBuffer<float> *ab : *abs) {
+      delete ab;
+    }
+    delete abs;
+    for (LoopStreamer *ls : *streamers) {
+      delete ls;
+    }
+    delete streamers;
+  }
+
+  void stream(AudioBuffer<float> &dest) {
+    dest.clear();
+    for (LoopStreamer *ls : *streamers) {
+      ls->stream(dest);
+    }
+  }
+
+private:
+  std::vector<AudioBuffer<float>*> *abs;
+  std::vector<LoopStreamer*> *streamers;
+};
+
 namespace IDs
 {
 
@@ -2132,22 +2255,26 @@ public:
         for (auto i = 0; i != maxVoices; ++i)
             synthesiser.addVoice (new MPESamplerVoice (sound));
 
-        myLoop = readLoop("/Users/gmt/Loopo/loop.wav");
-        myLoopStreamer = new LoopStreamer(myLoop);
-        myLoop2 = readLoop("/Users/gmt/Loopo/loop2.wav");
-        myLoopStreamer2 = new LoopStreamer(myLoop2);
-        myLoop3 = resample(*myLoop2,  myLoop->getNumSamples());
-        myLoopStreamer3 = new LoopStreamer(myLoop3);
+        //myLoops = readLoopDir("loops");
+        loopBank = new LoopBank("/Users/gmt/Loopo/loops", 120);
+
+        /* myLoop = readLoop("/Users/gmt/Loopo/loop.wav"); */
+        /* myLoopStreamer = new LoopStreamer(myLoop); */
+        /* myLoop2 = readLoop("/Users/gmt/Loopo/loop2.wav"); */
+        /* myLoopStreamer2 = new LoopStreamer(myLoop2); */
+        /* myLoop3 = resample(*myLoop2,  myLoop->getNumSamples()); */
+        /* myLoopStreamer3 = new LoopStreamer(myLoop3); */
     }
 
     // TODO get rid of this
     ~SamplerAudioProcessor() {
-      delete myLoopStreamer;
-      delete myLoop;
-      delete myLoopStreamer2;
-      delete myLoop2;
-      delete myLoopStreamer3;
-      delete myLoop3;
+      delete loopBank;
+      /* delete myLoopStreamer; */
+      /* delete myLoop; */
+      /* delete myLoopStreamer2; */
+      /* delete myLoop2; */
+      /* delete myLoopStreamer3; */
+      /* delete myLoop3; */
     }
 
     void prepareToPlay (double sampleRate, int) override
@@ -2565,53 +2692,6 @@ private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessorEditor)
     };
 
-    // TODO should be a function
-    AudioBuffer<float> *readLoop(const String &filename) {
-      // TODO should I only create one? yes
-      AudioFormatManager manager;
-      manager.registerBasicFormats();
-
-      juce::File file(filename);
-      jassert (file.existsAsFile());
-      //auto is = file.createInputStream();
-
-      // TODO Nothing deallocates this; 'delete' is not used once here
-      AudioFormatReader *afr = manager.createReaderFor(file);
-      juce::Logger::getCurrentLogger()->writeToLog(
-          "Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples));
-
-      jassert(afr->numChannels == 2);
-      // TODO assert not bigger than max int
-      int numSamples = (int)afr->lengthInSamples;
-      AudioBuffer<float> *ab = new AudioBuffer<float>(afr->numChannels, numSamples);
-      afr->read(ab, 0, numSamples, 0, true, true);
-      // TODO bad?
-      delete afr;
-      return ab;
-    }
-
-    // TODO should be a function
-    AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
-      // TODO handle more cases
-      jassert(inbuf.getNumChannels() == 2);
-      jassert(outNumSamples > 0);
-      auto outbuf = new AudioBuffer<float>(2, outNumSamples);
-      WindowedSincInterpolator interpolator;
-      interpolator.reset();
-      // 2 in 1 out -> speedRatio = 2
-      double speedRatio = ((double)inbuf.getNumSamples()) / ((double)outbuf->getNumSamples());
-      for (int c = 0; c < 2; ++c) {
-        auto numInputSamplesRead = interpolator.process(speedRatio,
-            inbuf.getReadPointer(c),
-            outbuf->getWritePointer(c),
-            outbuf->getNumSamples());
-        juce::Logger::getCurrentLogger()->writeToLog(
-            "Resamp input len " + std::to_string(inbuf.getNumSamples()) + " output len " + std::to_string(outbuf->getNumSamples()) +
-              " num read " + std::to_string(numInputSamplesRead));
-      }
-      return outbuf;
-    }
-
     bool supportsDoublePrecisionProcessing() const override {
       return false;
     }
@@ -2624,9 +2704,10 @@ private:
         jassert(getMainBusNumInputChannels() == 0);
         jassert(getMainBusNumOutputChannels() == 2);
 
-        buffer.clear();
-        myLoopStreamer->stream(buffer);
-        myLoopStreamer3->stream(buffer);
+        //buffer.clear();
+        /* myLoopStreamer->stream(buffer); */
+        /* myLoopStreamer3->stream(buffer); */
+        loopBank->stream(buffer);
 
 #if 0
 // copyFrom (int destChannel, int destStartSample, const AudioBuffer &source, int sourceChannel, int sourceStartSample, int numSamples) noexcept
@@ -2650,10 +2731,10 @@ private:
             int samplesToCopy = std::min(myLoopSamplesRemaining, numSamplesRemaining);
 
             jassert(outputBufferPosition >= 0 && outputBufferPosition < buffer.getNumSamples());
-            juce::Logger::getCurrentLogger()->writeToLog(
-                "Write: myLoopPosition " + std::to_string(myLoopPosition) + " samplesToCopy " + std::to_string(samplesToCopy) +
-                " outputBufferPosition " + std::to_string(outputBufferPosition) + " output len " + std::to_string(buffer.getNumSamples()) +
-                " loop len " + std::to_string(myLoop->getNumSamples()));
+            /* juce::Logger::getCurrentLogger()->writeToLog( */
+            /*     "Write: myLoopPosition " + std::to_string(myLoopPosition) + " samplesToCopy " + std::to_string(samplesToCopy) + */
+            /*     " outputBufferPosition " + std::to_string(outputBufferPosition) + " output len " + std::to_string(buffer.getNumSamples()) + */
+            /*     " loop len " + std::to_string(myLoop->getNumSamples())); */
             buffer.copyFrom(0, outputBufferPosition, *myLoop, 0, myLoopPosition, samplesToCopy);
             buffer.copyFrom(1, outputBufferPosition, *myLoop, 1, myLoopPosition, samplesToCopy);
 
@@ -2712,12 +2793,14 @@ private:
 
     }
 
-    juce::AudioBuffer<float> *myLoop;
-    LoopStreamer *myLoopStreamer;
-    juce::AudioBuffer<float> *myLoop2;
-    LoopStreamer *myLoopStreamer2;
-    juce::AudioBuffer<float> *myLoop3;
-    LoopStreamer *myLoopStreamer3;
+    LoopBank *loopBank;
+
+/*     juce::AudioBuffer<float> *myLoop; */
+/*     LoopStreamer *myLoopStreamer; */
+/*     juce::AudioBuffer<float> *myLoop2; */
+/*     LoopStreamer *myLoopStreamer2; */
+/*     juce::AudioBuffer<float> *myLoop3; */
+/*     LoopStreamer *myLoopStreamer3; */
     //int myLoopPosition;
 
     CommandFifo<SamplerAudioProcessor> commands;

@@ -48,10 +48,10 @@ public:
       int samplesToCopy = std::min(loopSamplesRemaining, numSamplesRemaining);
 
       jassert(destBufferPosition >= 0 && destBufferPosition < dest.getNumSamples());
-      juce::Logger::getCurrentLogger()->writeToLog(
-          "Write: currentPosition " + std::to_string(currentPosition) + " samplesToCopy " + std::to_string(samplesToCopy) +
-          " destBufferPosition " + std::to_string(destBufferPosition) + " dest len " + std::to_string(dest.getNumSamples()) +
-          " loop len " + std::to_string(loop->getNumSamples()));
+      /* juce::Logger::getCurrentLogger()->writeToLog( */
+      /*     "Write: currentPosition " + std::to_string(currentPosition) + " samplesToCopy " + std::to_string(samplesToCopy) + */
+      /*     " destBufferPosition " + std::to_string(destBufferPosition) + " dest len " + std::to_string(dest.getNumSamples()) + */
+      /*     " loop len " + std::to_string(loop->getNumSamples())); */
       dest.addFrom(0, destBufferPosition, *loop, 0, currentPosition, samplesToCopy);
       dest.addFrom(1, destBufferPosition, *loop, 1, currentPosition, samplesToCopy);
 
