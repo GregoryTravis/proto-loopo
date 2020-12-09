@@ -2131,10 +2131,27 @@ public:
         // Start with the max number of voices
         for (auto i = 0; i != maxVoices; ++i)
             synthesiser.addVoice (new MPESamplerVoice (sound));
+
         myLoop = readLoop("/Users/gmt/Loopo/loop.wav");
         myLoopStreamer = new LoopStreamer(myLoop);
         myLoop2 = readLoop("/Users/gmt/Loopo/loop2.wav");
         myLoopStreamer2 = new LoopStreamer(myLoop2);
+        jassert(myLoop2->getNumChannels() == 2);
+        myLoop3 = new AudioBuffer<float>(2, myLoop->getNumSamples());
+        WindowedSincInterpolator interpolator;
+        interpolator.reset();
+        // 2 in 1 out -> speedRatio = 2
+        double speedRatio = ((double)myLoop2->getNumSamples()) / ((double)myLoop->getNumSamples());
+        for (int c = 0; c < 2; ++c) {
+          auto numInputSamplesRead = interpolator.process(speedRatio,
+              myLoop2->getReadPointer(c),
+              myLoop3->getWritePointer(c),
+              myLoop->getNumSamples());
+          juce::Logger::getCurrentLogger()->writeToLog(
+              "Resamp input len " + std::to_string(myLoop2->getNumSamples()) + " output len " + std::to_string(myLoop->getNumSamples()) +
+                " num read " + std::to_string(numInputSamplesRead));
+        }
+        myLoopStreamer3 = new LoopStreamer(myLoop3);
     }
 
     // TODO get rid of this
@@ -2143,6 +2160,8 @@ public:
       delete myLoop;
       delete myLoopStreamer2;
       delete myLoop2;
+      delete myLoopStreamer3;
+      delete myLoop3;
     }
 
     void prepareToPlay (double sampleRate, int) override
@@ -2599,7 +2618,7 @@ private:
 
         buffer.clear();
         myLoopStreamer->stream(buffer);
-        myLoopStreamer2->stream(buffer);
+        myLoopStreamer3->stream(buffer);
 
 #if 0
 // copyFrom (int destChannel, int destStartSample, const AudioBuffer &source, int sourceChannel, int sourceStartSample, int numSamples) noexcept
@@ -2689,6 +2708,8 @@ private:
     LoopStreamer *myLoopStreamer;
     juce::AudioBuffer<float> *myLoop2;
     LoopStreamer *myLoopStreamer2;
+    juce::AudioBuffer<float> *myLoop3;
+    LoopStreamer *myLoopStreamer3;
     //int myLoopPosition;
 
     CommandFifo<SamplerAudioProcessor> commands;
