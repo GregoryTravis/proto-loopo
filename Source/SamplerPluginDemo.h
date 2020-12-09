@@ -2136,21 +2136,7 @@ public:
         myLoopStreamer = new LoopStreamer(myLoop);
         myLoop2 = readLoop("/Users/gmt/Loopo/loop2.wav");
         myLoopStreamer2 = new LoopStreamer(myLoop2);
-        jassert(myLoop2->getNumChannels() == 2);
-        myLoop3 = new AudioBuffer<float>(2, myLoop->getNumSamples());
-        WindowedSincInterpolator interpolator;
-        interpolator.reset();
-        // 2 in 1 out -> speedRatio = 2
-        double speedRatio = ((double)myLoop2->getNumSamples()) / ((double)myLoop->getNumSamples());
-        for (int c = 0; c < 2; ++c) {
-          auto numInputSamplesRead = interpolator.process(speedRatio,
-              myLoop2->getReadPointer(c),
-              myLoop3->getWritePointer(c),
-              myLoop->getNumSamples());
-          juce::Logger::getCurrentLogger()->writeToLog(
-              "Resamp input len " + std::to_string(myLoop2->getNumSamples()) + " output len " + std::to_string(myLoop->getNumSamples()) +
-                " num read " + std::to_string(numInputSamplesRead));
-        }
+        myLoop3 = resample(*myLoop2,  myLoop->getNumSamples());
         myLoopStreamer3 = new LoopStreamer(myLoop3);
     }
 
@@ -2579,7 +2565,7 @@ private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessorEditor)
     };
 
-    // TODO should be static
+    // TODO should be a function
     AudioBuffer<float> *readLoop(const String &filename) {
       // TODO should I only create one? yes
       AudioFormatManager manager;
@@ -2602,6 +2588,28 @@ private:
       // TODO bad?
       delete afr;
       return ab;
+    }
+
+    // TODO should be a function
+    AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
+      // TODO handle more cases
+      jassert(inbuf.getNumChannels() == 2);
+      jassert(outNumSamples > 0);
+      auto outbuf = new AudioBuffer<float>(2, outNumSamples);
+      WindowedSincInterpolator interpolator;
+      interpolator.reset();
+      // 2 in 1 out -> speedRatio = 2
+      double speedRatio = ((double)inbuf.getNumSamples()) / ((double)outbuf->getNumSamples());
+      for (int c = 0; c < 2; ++c) {
+        auto numInputSamplesRead = interpolator.process(speedRatio,
+            inbuf.getReadPointer(c),
+            outbuf->getWritePointer(c),
+            outbuf->getNumSamples());
+        juce::Logger::getCurrentLogger()->writeToLog(
+            "Resamp input len " + std::to_string(inbuf.getNumSamples()) + " output len " + std::to_string(outbuf->getNumSamples()) +
+              " num read " + std::to_string(numInputSamplesRead));
+      }
+      return outbuf;
     }
 
     bool supportsDoublePrecisionProcessing() const override {
