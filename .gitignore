@@ -2,3 +2,6 @@ JuceLibraryCode
 Builds/MacOSX/build
 .DS_Store
 Builds/VisualStudio2019
+*.wav
+todo.txt
+notes.txt
