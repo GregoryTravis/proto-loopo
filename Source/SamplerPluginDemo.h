@@ -146,7 +146,7 @@ public:
     streamers = new std::vector<LoopStreamer*>();
     ons = new std::vector<bool>(abs->size(), false);
 
-    std::vector<AudioBuffer<float>*> *resampledAbs = new std::vector<AudioBuffer<float>*>();
+    resampledAbs = new std::vector<AudioBuffer<float>*>();
     for (AudioBuffer<float> *ab : *abs) {
       auto resampledAb = resample(*ab, desiredLength);
       resampledAbs->push_back(resampledAb);
