@@ -14,6 +14,17 @@ public:
     jassert(loop->getNumSamples() > 0);
   }
 
+  // The original design of this class assumed that we always started at 0 and
+  // we always resumed at the sample after the last block, but in order to
+  // synchronize with the host timeline, we need to lock our idea of time to
+  // the host. Calling this before each stream can do this.  If you don't call
+  // this, then the current position will be the last current position + the
+  // size of the last block.
+  // TODO: just git rid of the old semantics?
+  void setTime(int64 timeInSamples) {
+    currentPosition = timeInSamples % loop->getNumSamples();
+  }
+
   // Write the next n samples from the repeating loop into the destination
   // buffer, where n is the destination buffer's length. Advances the current
   // position so that the next write takes up where this one left off.

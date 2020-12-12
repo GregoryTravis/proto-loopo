@@ -187,6 +187,16 @@ public:
     delete ons;
   }
 
+  // The original design of this class assumed that we always started at 0 and
+  // we always resumed at the sample after the last block, but in order to
+  // synchronize with the host timeline, we need to lock our idea of time to
+  // the host. Calling this before each stream can do this.
+  void setTime(int64 timeInSamples) {
+    for (LoopStreamer *ls : *streamers) {
+      ls->setTime(timeInSamples);
+    }
+  }
+
   void stream(AudioBuffer<float> &dest) {
     dest.clear();
     for (int i = 0; i < streamers->size(); ++i) {
@@ -2720,6 +2730,19 @@ private:
       return false;
     }
 
+    // TODO Make static or function
+    void synchronizeWithPlayHead() {
+      AudioPlayHead *ph = getPlayHead();
+      AudioPlayHead::CurrentPositionInfo cpi;
+      if (ph->getCurrentPosition(cpi)) {
+        // If the timeline is playing, sync with it. Otherwise, just continue
+        // playing sequentially by not calling setTime() at all.
+        if (cpi.isPlaying) {
+          loopBank->setTime(cpi.timeInSamples);
+        }
+      }
+    }
+
     //==============================================================================
     void processFloat (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
     {
@@ -2728,9 +2751,7 @@ private:
         jassert(getMainBusNumInputChannels() == 0);
         jassert(getMainBusNumOutputChannels() == 2);
 
-        //buffer.clear();
-        /* myLoopStreamer->stream(buffer); */
-        /* myLoopStreamer3->stream(buffer); */
+        synchronizeWithPlayHead();
         loopBank->stream(buffer);
 
         int time;
