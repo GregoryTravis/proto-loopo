@@ -64,7 +64,7 @@
 
 // TODO should be a function
 AudioBuffer<float> *readLoop(const String &filename) {
-  juce::Logger::getCurrentLogger()->writeToLog("Reading " + filename);
+  //juce::Logger::getCurrentLogger()->writeToLog("Reading " + filename);
 
   // TODO should I only create one? yes
   AudioFormatManager manager;
@@ -76,8 +76,8 @@ AudioBuffer<float> *readLoop(const String &filename) {
 
   // TODO Nothing deallocates this; 'delete' is not used once here
   AudioFormatReader *afr = manager.createReaderFor(file);
-  juce::Logger::getCurrentLogger()->writeToLog(
-      "Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples));
+  /* juce::Logger::getCurrentLogger()->writeToLog( */
+  /*     "Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples)); */
 
   jassert(afr->numChannels == 2);
   // TODO assert not bigger than max int
@@ -96,22 +96,29 @@ AudioBuffer<float> *readLoop(const File &file) {
 std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
   std::vector<AudioBuffer<float>*> *abs = new std::vector<AudioBuffer<float>*>();
    
-  for (DirectoryEntry entry : RangedDirectoryIterator (File(dirname), false)) {
-    abs->push_back(readLoop(entry.getFile()));
+  double elapsed;
+  {
+    ScopedTimeMeasurement m(elapsed);
+
+    for (DirectoryEntry entry : RangedDirectoryIterator (File(dirname), false)) {
+      abs->push_back(readLoop(entry.getFile()));
+    }
   }
+  juce::Logger::getCurrentLogger()->writeToLog("readLoopDir " + String(elapsed) + "s");
 
   return abs;
 }
 
-std::vector<AudioBuffer<float>*> *readLoops(const std::vector<File> &files) {
-  std::vector<AudioBuffer<float>*> *abs = new std::vector<AudioBuffer<float>*>();
-  //abs->resize(files.size());
-  //std::transform(files.begin(), files.end(), abs->begin(), readLoop);
-  for (File file : files) {
-    abs->push_back(readLoop(file));
-  }
-  return abs;
-}
+// Unused
+/* std::vector<AudioBuffer<float>*> *readLoops(const std::vector<File> &files) { */
+/*   std::vector<AudioBuffer<float>*> *abs = new std::vector<AudioBuffer<float>*>(); */
+/*   //abs->resize(files.size()); */
+/*   //std::transform(files.begin(), files.end(), abs->begin(), readLoop); */
+/*   for (File file : files) { */
+/*     abs->push_back(readLoop(file)); */
+/*   } */
+/*   return abs; */
+/* } */
 
 // TODO should be a function
 AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
@@ -119,7 +126,8 @@ AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
   jassert(inbuf.getNumChannels() == 2);
   jassert(outNumSamples > 0);
   auto outbuf = new AudioBuffer<float>(2, outNumSamples);
-  WindowedSincInterpolator interpolator;
+  // WindowedSincInterpolator interpolator;
+  LagrangeInterpolator interpolator;
   interpolator.reset();
   // 2 in 1 out -> speedRatio = 2
   double speedRatio = ((double)inbuf.getNumSamples()) / ((double)outbuf->getNumSamples());
@@ -128,9 +136,9 @@ AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
         inbuf.getReadPointer(c),
         outbuf->getWritePointer(c),
         outbuf->getNumSamples());
-    juce::Logger::getCurrentLogger()->writeToLog(
-        "Resamp input len " + std::to_string(inbuf.getNumSamples()) + " output len " + std::to_string(outbuf->getNumSamples()) +
-          " num read " + std::to_string(numInputSamplesRead));
+    /* juce::Logger::getCurrentLogger()->writeToLog( */
+    /*     "Resamp input len " + std::to_string(inbuf.getNumSamples()) + " output len " + std::to_string(outbuf->getNumSamples()) + */
+    /*       " num read " + std::to_string(numInputSamplesRead)); */
   }
   return outbuf;
 }
@@ -140,17 +148,24 @@ class LoopBank {
 public:
   LoopBank(const String dirName, const int bpm) {
     int desiredLength = 44100.0 * 4.0 * (60.0 / ((double)bpm));
-    juce::Logger::getCurrentLogger()->writeToLog("bpm " + std::to_string(bpm) + " len " + std::to_string(desiredLength));
+    /* juce::Logger::getCurrentLogger()->writeToLog("bpm " + std::to_string(bpm) + " len " + std::to_string(desiredLength)); */
 
     std::vector<AudioBuffer<float>*> *abs = readLoopDir(dirName);
     streamers = new std::vector<LoopStreamer*>();
     ons = new std::vector<bool>(abs->size(), false);
 
     resampledAbs = new std::vector<AudioBuffer<float>*>();
-    for (AudioBuffer<float> *ab : *abs) {
-      auto resampledAb = resample(*ab, desiredLength);
-      resampledAbs->push_back(resampledAb);
+
+    double elapsed;
+    {
+      ScopedTimeMeasurement m(elapsed);
+
+      for (AudioBuffer<float> *ab : *abs) {
+        auto resampledAb = resample(*ab, desiredLength);
+        resampledAbs->push_back(resampledAb);
+      }
     }
+    juce::Logger::getCurrentLogger()->writeToLog("resample " + String(elapsed) + "s");
 
     for (AudioBuffer<float> *ab : *resampledAbs) {
       streamers->push_back(new LoopStreamer(ab));
