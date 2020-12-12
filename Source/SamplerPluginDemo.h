@@ -205,7 +205,7 @@ private:
   std::vector<AudioBuffer<float>*> *resampledAbs;
   std::vector<LoopStreamer*> *streamers;
   std::vector<bool> *ons;
-  const int firstNote = 72;
+  const int firstNote = 72 - 24;
 };
 
 namespace IDs
@@ -2280,7 +2280,7 @@ public:
             synthesiser.addVoice (new MPESamplerVoice (sound));
 
         //myLoops = readLoopDir("loops");
-        loopBank = new LoopBank("/Users/gmt/Loopo/loops", 120);
+        loopBank = new LoopBank("/Users/gmt/Loopo/gnappy-raw", 150);
 
         /* myLoop = readLoop("/Users/gmt/Loopo/loop.wav"); */
         /* myLoopStreamer = new LoopStreamer(myLoop); */
