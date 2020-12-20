@@ -50,6 +50,7 @@
 
 #include "DemoUtilities.h"
 #include "LoopStreamer.h"
+#include "Wrapper.h"
 
 #include <array>
 #include <atomic>
@@ -2560,6 +2561,8 @@ public:
     float getPlaybackPosition (int voice) const { return playbackPositions.at ((size_t) voice); }
 
 private:
+    Wrapper wrapper;
+
     //==============================================================================
     class SamplerAudioProcessorEditor  : public AudioProcessorEditor,
                                          public FileDragAndDropTarget,

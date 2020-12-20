@@ -77,6 +77,10 @@
 			isa = PBXBuildFile;
 			fileRef = 81B267D905BEBB7F740ADF8D;
 		};
+		29D887655EA47E2600783B60 = {
+			isa = PBXBuildFile;
+			fileRef = 42D97E582C95FD8CB1AF7948;
+		};
 		B94246E0136A99238FCC442C = {
 			isa = PBXBuildFile;
 			fileRef = EDB2DD5CB2C92C287D1409C3;
@@ -221,6 +225,13 @@
 			lastKnownFileType = sourcecode.cpp.objcpp;
 			name = "include_juce_gui_extra.mm";
 			path = "../../JuceLibraryCode/include_juce_gui_extra.mm";
+			sourceTree = "SOURCE_ROOT";
+		};
+		42D97E582C95FD8CB1AF7948 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Wrapper.cpp;
+			path = ../../Source/Wrapper.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		4300CD8B7249DC6850B8F642 = {
@@ -503,6 +514,13 @@
 			path = System/Library/Frameworks/CoreAudioKit.framework;
 			sourceTree = SDKROOT;
 		};
+		E66D01905D808F167E8A2825 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Wrapper.h;
+			path = ../../Source/Wrapper.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		E8EB409ED11BD348E7FD46BC = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -555,6 +573,8 @@
 		A6F00518FA3644384663989B = {
 			isa = PBXGroup;
 			children = (
+				E66D01905D808F167E8A2825,
+				42D97E582C95FD8CB1AF7948,
 				94DBCCADD71BE5A7766CB83F,
 				8176CEFABAE6BDD93C868AE2,
 				EDB2DD5CB2C92C287D1409C3,
@@ -820,21 +840,30 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST3.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST3/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -939,6 +968,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -952,9 +982,10 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1059,21 +1090,30 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-AU.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/Components/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
@@ -1179,6 +1219,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1192,9 +1233,10 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
@@ -1297,19 +1339,28 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-Standalone_Plugin.plist;
 				INFOPLIST_PREPROCESS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-lSamplerPlugin";
+				OTHER_LDFLAGS = "-lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1410,6 +1461,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1421,9 +1473,10 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-lSamplerPlugin";
+				OTHER_LDFLAGS = "-lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1525,15 +1578,24 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
@@ -1638,6 +1700,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1648,6 +1711,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
+					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
@@ -1994,6 +2058,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29D887655EA47E2600783B60,
 				B94246E0136A99238FCC442C,
 				489BF9ECB05A093B2090CB38,
 				F75DDC9A3A5890B8DD7D5598,

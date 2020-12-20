@@ -1,0 +1,17 @@
+header search paths
+/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/
+
+library search paths
+/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/
+/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/
+/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/
+/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/
+/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/
+
+libraries to link in
+HSrts
+HSbase-4.12.0.0
+HSghc-prim-0.5.3
+Cffi
+HSinteger-gmp-1.0.2.0
+iconv
