@@ -6,6 +6,7 @@
 
 #include "Rts.h"
 #include "Wrapper.h"
+#include "Foo_stub.h"
 
 static int initted = 0;
 
@@ -34,6 +35,10 @@ void Wrapper::init() {
   //hs_add_root(__stginit_Looper);
 
   initted = 1;
+}
+
+int Wrapper::fuu() {
+  return foo(12, 23);
 }
 
 Wrapper::~Wrapper() {

@@ -8,6 +8,7 @@
               jucerFormatVersion="1" headerPath="/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/">
   <MAINGROUP id="T0BEGZ" name="Loopo">
     <GROUP id="{4860042C-F3C1-D061-E818-CC6BFA69682D}" name="Source">
+      <FILE id="bFdfjh" name="Foo_stub.h" compile="0" resource="0" file="Source/Foo_stub.h"/>
       <FILE id="iuYDGy" name="Wrapper.h" compile="0" resource="0" file="Source/Wrapper.h"/>
       <FILE id="qJIBEd" name="Wrapper.cpp" compile="1" resource="0" file="Source/Wrapper.cpp"/>
       <FILE id="UoEYKq" name="SamplerPluginDemo.h" compile="0" resource="0"
@@ -35,10 +36,10 @@
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="HSrts&#10;HSbase-4.12.0.0&#10;HSghc-prim-0.5.3&#10;Cffi&#10;HSinteger-gmp-1.0.2.0&#10;iconv">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="HSrts&#10;HSbase-4.12.0.0&#10;HSghc-prim-0.5.3&#10;Cffi&#10;HSinteger-gmp-1.0.2.0&#10;iconv&#10;Foo">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SamplerPlugin"
-                       libraryPath="/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/&#10;"/>
+                       libraryPath="/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/&#10;/Users/gmt/Loopo"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="SamplerPlugin"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

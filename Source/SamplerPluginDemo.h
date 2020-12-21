@@ -2314,6 +2314,9 @@ public:
         /* myLoopStreamer2 = new LoopStreamer(myLoop2); */
         /* myLoop3 = resample(*myLoop2,  myLoop->getNumSamples()); */
         /* myLoopStreamer3 = new LoopStreamer(myLoop3); */
+
+        int hey = wrapper.fuu();
+        juce::Logger::getCurrentLogger()->writeToLog("fuuu " + std::to_string(hey) + " " + std::to_string(sizeof(int)));
     }
 
     // TODO get rid of this

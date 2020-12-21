@@ -7,6 +7,8 @@ class Wrapper {
 public:
   Wrapper();
   ~Wrapper();
+
+  int fuu();
 private:
   void init();
 };

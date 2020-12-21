@@ -220,6 +220,13 @@
 			path = ../../Source/DemoUtilities.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		2D96C0643AF55D866DD9DA5F = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "Foo_stub.h";
+			path = "../../Source/Foo_stub.h";
+			sourceTree = "SOURCE_ROOT";
+		};
 		3731BC0917526420ED255398 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -573,6 +580,7 @@
 		A6F00518FA3644384663989B = {
 			isa = PBXGroup;
 			children = (
+				2D96C0643AF55D866DD9DA5F,
 				E66D01905D808F167E8A2825,
 				42D97E582C95FD8CB1AF7948,
 				94DBCCADD71BE5A7766CB83F,
@@ -853,6 +861,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+					"\"/Users/gmt/Loopo\"",
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -863,7 +872,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv -lFoo";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -985,7 +994,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv -lFoo";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1103,6 +1112,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+					"\"/Users/gmt/Loopo\"",
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1113,7 +1123,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv -lFoo";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
@@ -1236,7 +1246,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv -lFoo";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
@@ -1351,6 +1361,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+					"\"/Users/gmt/Loopo\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = (
@@ -1360,7 +1371,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
+				OTHER_LDFLAGS = "-lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv -lFoo";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1476,7 +1487,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv";
+				OTHER_LDFLAGS = "-lSamplerPlugin -lHSrts -lHSbase-4.12.0.0 -lHSghc-prim-0.5.3 -lCffi -lHSinteger-gmp-1.0.2.0 -liconv -lFoo";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1589,6 +1600,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+					"\"/Users/gmt/Loopo\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = (
