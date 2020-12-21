@@ -4,5 +4,6 @@ Builds/MacOSX/build
 Builds/VisualStudio2019
 Builds/MacOSX/Loopo.xcodeproj/xcuserdata/gmt.xcuserdatad/xcdebugger/
 *.wav
+*.midi
 todo.txt
 notes.txt
