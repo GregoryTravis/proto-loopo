@@ -9,7 +9,7 @@ public:
   ~Wrapper();
 
   int fuu();
-  void frobb(float *f);
+  void frobb(float *f, int len);
 private:
   void init();
 };

@@ -2776,10 +2776,11 @@ private:
         loopBank->stream(buffer);
 
         float *abp = buffer.getWritePointer(1);
+        int len = buffer.getNumSamples();
         abp[0] = 0.1;
-        abp[1] = 0.15;
-        wrapper.frobb(abp);
-        //juce::Logger::getCurrentLogger()->writeToLog("frobb 1 " + std::to_string(abp[0]) + " " + std::to_string(abp[1]));
+        abp[len-1] = 0.15;
+        wrapper.frobb(abp, len);
+        juce::Logger::getCurrentLogger()->writeToLog("frobb 1 " + std::to_string(abp[0]) + " " + std::to_string(abp[len-1]) + " " + std::to_string(len));
 
         int time;
         juce::MidiMessage m;
