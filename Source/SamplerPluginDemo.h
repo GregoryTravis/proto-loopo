@@ -188,7 +188,7 @@ public:
       return;
     }
     (*ons)[index] = m.isNoteOn();
-    juce::Logger::getCurrentLogger()->writeToLog("flip " + std::to_string(index) + " " + std::to_string((*ons)[index]));
+    //juce::Logger::getCurrentLogger()->writeToLog("flip " + std::to_string(index) + " " + std::to_string((*ons)[index]));
   }
 
   ~LoopBank() {
@@ -2775,11 +2775,17 @@ private:
         synchronizeWithPlayHead();
         loopBank->stream(buffer);
 
+        float *abp = buffer.getWritePointer(1);
+        abp[0] = 0.1;
+        abp[1] = 0.15;
+        wrapper.frobb(abp);
+        //juce::Logger::getCurrentLogger()->writeToLog("frobb 1 " + std::to_string(abp[0]) + " " + std::to_string(abp[1]));
+
         int time;
         juce::MidiMessage m;
      
         for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);) {
-          juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());
+          //juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());
           loopBank->update(m);
         }
         midiMessages.clear();

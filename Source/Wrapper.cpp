@@ -41,5 +41,10 @@ int Wrapper::fuu() {
   return foo(12, 23);
 }
 
+
+void Wrapper::frobb(float *f) {
+  hs_frobb(f);
+}
+
 Wrapper::~Wrapper() {
 }
