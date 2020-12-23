@@ -1,4 +1,5 @@
-./merge-libs.rb
+./merge-libs.rb libloopoall.a
+ls -lh libloopoall.a
 exit
 
 ls -l ~/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/vector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig/libHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig.a
