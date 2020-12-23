@@ -10,7 +10,7 @@ assert ARGV.length == 1
 
 outputLib = ARGV[0]
 
-`rm #{outputLib}`
+`rm -f #{outputLib}`
 
 # Like 'primitive-0.6.4.0'
 versioned_lib_names = `stack ls dependencies --separator='-'`.split("\n")
@@ -39,21 +39,20 @@ lib2files = Hash[versioned_lib_names.map { |vln|
 #puts lib2files
 
 # Unpack each library into a dir
-#tmpdir = Dir.mktmpdir
 pwd = Dir.pwd
-tmpdir = '/Users/gmt/Loopo/haha'
-`rm -r #{tmpdir}`
+#tmpdir = Dir.mktmpdir
+#tmpdir = '/Users/gmt/Loopo/haha'
+tmpdir = "tmp-merge-libs.#{$$}"
+#`rm -r #{tmpdir}`
 `mkdir #{tmpdir}`
-dirs = lib2files.map { |lib, path|
+lib2files.map { |lib, path|
   #puts "exracting #{vln}"
   libdir = "#{tmpdir}/#{lib}"
   `mkdir #{libdir}`
   Dir.chdir(libdir)
   `ar x #{path}`
-  libdir
+  Dir.chdir(pwd)
 }
-Dir.chdir(pwd)
-#puts dirs
 
 puts "building #{outputLib}"
 out = `ar cqs #{outputLib} #{tmpdir}/*/*.o 2>&1`
@@ -62,3 +61,4 @@ if !out.empty?
   $stderr.puts out
   exit 1
 end
+`rm -r #{tmpdir}`
