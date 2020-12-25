@@ -1,3 +1,5 @@
+PROJUCER=~/JUCE/Projucer.app/Contents/MacOS/Projucer
+
 all: run
 
 # clean:
@@ -13,5 +15,6 @@ exe: lib
 run: exe
 	/Users/gmt/JUCE/extras/AudioPluginHost/Builds/MacOSX/build/Debug/AudioPluginHost.app/Contents/MacOS/AudioPluginHost -NSDocumentRevisionsDebugMode YES loopo.filtergraph
 
-update-libs:
+update-proj:
 	bin/add-libs.rb Loopo.jucer
+	$(PROJUCER) --resave Loopo.jucer
