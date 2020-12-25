@@ -7,3 +7,5 @@ Builds/MacOSX/Loopo.xcodeproj/xcuserdata/gmt.xcuserdatad/xcdebugger/
 *.midi
 todo.txt
 notes.txt
+stack.yaml.lock
+.stack-work

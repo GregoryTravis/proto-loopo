@@ -1,5 +1,11 @@
 #!/usr/bin/ruby
 
+# Libs to find in ~/.stack
+EXTRA_LIBS = ['Cffi']
+
+# Libs to link in (no path needed)
+EXTRA_LINK_LIBS = ["iconv"]
+
 def assert(b, s='??')
   if !b
     raise StandardError.new("Assertion failure: #{s}")
@@ -28,6 +34,8 @@ jucerFile = ARGV[0]
 versioned_lib_names = `stack ls dependencies --separator='-'`.split("\n")
 puts versioned_lib_names.join('+')
 
+versioned_lib_names += EXTRA_LIBS
+
 # Remove loopo
 # versioned_lib_names -= ["loopo-0.1.0.0"]
 
@@ -46,7 +54,7 @@ end
 lib2files = Hash[versioned_lib_names.map { |vln|
   puts "finding #{vln}"
   files = `find ~/.stack | grep #{vln}`.split("\n")
-  files += `find .stack-work | grep #{vln}`.split("\n")
+  files += `find #{Dir.pwd}/.stack-work | grep #{vln}`.split("\n")
   files = files.select { |f| f.end_with?(".a") }
   files = files.select { |f| !should_avoid(f) }
   #puts vln, files
@@ -72,6 +80,8 @@ end
 lib_dirs, lib_names = lib2files.values.map { |p| lib_dir_and_name(p) }.transpose
 puts "lib_names #{lib_names}"
 puts "lib_dirs #{lib_dirs}"
+
+lib_names += EXTRA_LINK_LIBS
 
 lib_names_string = lib_names.join("&#10;")
 xcode_mac_line = <<-END
