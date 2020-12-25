@@ -1,3 +1,6 @@
+make
+exit
+
 ./add-libs.rb Loopo.jucer
 echo ====
 sd Loopo.jucer
