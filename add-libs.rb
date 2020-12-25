@@ -1,10 +1,29 @@
 #!/usr/bin/ruby
 
+# add-libs.rb modifies a Projucer (.jucer) file to include library paths and
+# names. It gets the library names by running 'stack ls dependencies' and
+# searching for the libraries in ~/.stack and ./stack-work. It also adds a
+# couple of extra libraries.
+#
+# Library names are added to the XCODE_MAC tag, and library paths are added to
+# the libraryPath field of the CONFIGURATION tag.  Note: this doesn't parse the
+# XML in any way, it just does a dumb line substitution, so it assumes that the
+# XCODE_MAC and libraryPath lines don't have anything else on them.
+#
+# When it searches for libraries, it filters out certain alternate builds like
+# profiling; see AVOID_SUFFIXES.
+#
+# If it finds multiple builds of a library, it first ensures that they are all
+# identical, then returns one of them.
+
 # Libs to find in ~/.stack
 EXTRA_LIBS = ['Cffi']
 
 # Libs to link in (no path needed)
 EXTRA_LINK_LIBS = ["iconv"]
+
+# Don't consider libs ending in these
+AVOID_SUFFIXES = [ "_l", "_p", "_thr", "_debug" ]
 
 def assert(b, s='??')
   if !b
@@ -42,9 +61,6 @@ versioned_lib_names += EXTRA_LIBS
 # rts is libHSrts
 versioned_lib_names -= ["rts-1.0"]
 versioned_lib_names << "libHSrts"
-
-# Don't consider libs ending in these
-AVOID_SUFFIXES = [ "_l", "_p", "_thr", "_debug" ]
 
 def should_avoid(f)
   AVOID_SUFFIXES.map { |suf| f.include?("#{suf}.a") }.any?
@@ -110,32 +126,4 @@ end
 jucer = replace_line(jucer, "<XCODE_MAC", xcode_mac_line)
 jucer = replace_line(jucer, "libraryPath", library_path_line)
 
-#_jucerFile = "__#{jucerFile}"
 File.write(jucerFile, jucer.join("\n")+"\n")
-
-=begin
-# Unpack each library into a dir
-pwd = Dir.pwd
-#tmpdir = Dir.mktmpdir
-#tmpdir = '/Users/gmt/Loopo/haha'
-tmpdir = "tmp-merge-libs.#{$$}"
-#`rm -r #{tmpdir}`
-`mkdir #{tmpdir}`
-lib2files.map { |lib, path|
-  #puts "exracting #{vln}"
-  libdir = "#{tmpdir}/#{lib}"
-  `mkdir #{libdir}`
-  Dir.chdir(libdir)
-  `ar x #{path}`
-  Dir.chdir(pwd)
-}
-
-puts "building #{outputLib}"
-out = `ar cqs #{outputLib} #{tmpdir}/*/*.o 2>&1`
-out = out.split("\n").select { |line| !line.end_with?("has no symbols") }.join("\n")
-if !out.empty?
-  $stderr.puts out
-  exit 1
-end
-`rm -r #{tmpdir}`
-=end

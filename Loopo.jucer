@@ -41,9 +41,11 @@
 
 
 
+
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SamplerPlugin"
   libraryPath="/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/&#10;/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/&#10;/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/primitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/transformers-0.5.6.2/&#10;/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/vector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/&#10;/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/"/>
+
 
 
 
