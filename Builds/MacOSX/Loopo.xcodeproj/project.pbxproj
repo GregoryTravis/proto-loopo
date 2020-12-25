@@ -990,6 +990,20 @@
 				INFOPLIST_FILE = Info-VST3.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST3/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+					"\"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/\"",
+					"\"/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/primitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/transformers-0.5.6.2/\"",
+					"\"/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/vector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+				);
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1248,6 +1262,20 @@
 				INFOPLIST_FILE = Info-AU.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/Components/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+					"\"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/\"",
+					"\"/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/primitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/transformers-0.5.6.2/\"",
+					"\"/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/vector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+				);
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1496,6 +1524,20 @@
 				);
 				INFOPLIST_FILE = Info-Standalone_Plugin.plist;
 				INFOPLIST_PREPROCESS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+					"\"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/\"",
+					"\"/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/primitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/transformers-0.5.6.2/\"",
+					"\"/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/vector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = (
@@ -1741,6 +1783,20 @@
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/integer-gmp-1.0.2.0/\"",
+					"\"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/\"",
+					"\"/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/primitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/transformers-0.5.6.2/\"",
+					"\"/Users/gmt/.stack/snapshots/x86_64-osx/cf793d5e58850485fdeea13086f3ea038bbe5323ca0ebfe2613e5228635402ab/8.6.5/lib/x86_64-osx-ghc-8.6.5/vector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
+				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = (

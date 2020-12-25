@@ -6,14 +6,11 @@
 # couple of extra libraries.
 #
 # Library names are added to the XCODE_MAC tag, and library paths are added to
-# the libraryPath field of the Debug CONFIGURATION tag.
+# the libraryPath field of the CONFIGURATION tags.
 #
 # Note: this doesn't parse the XML in any way, it just does a dumb line
 # substitution, so it assumes that the XCODE_MAC and libraryPath lines don't
 # have anything else on them. TODO: fix this
-#
-# Note: we only modify the Debug configuration, we leave the Relase
-# configuration untouched. TODO: fix this
 #
 # When it searches for libraries, it filters out certain alternate builds like
 # profiling; see AVOID_SUFFIXES.
@@ -117,8 +114,8 @@ END
 jucer = File.read(jucerFile).split("\n")
 
 # Also makes sure there's only one.
-def replace_line(lines, findMe, replaceWith)
-  assert lines.select{ |s| s.include?(findMe) }.length == 1
+def replace_line(lines, findMe, replaceWith, expectedNum)
+  assert lines.select{ |s| s.include?(findMe) }.length == expectedNum
   lines.map { |line|
     if line.include?(findMe)
       replaceWith
@@ -128,7 +125,7 @@ def replace_line(lines, findMe, replaceWith)
   }
 end
 
-jucer = replace_line(jucer, "<XCODE_MAC", xcode_mac_line)
-jucer = replace_line(jucer, "libraryPath", library_path_line)
+jucer = replace_line(jucer, "<XCODE_MAC", xcode_mac_line, 1)
+jucer = replace_line(jucer, "libraryPath", library_path_line, 2)
 
 File.write(jucerFile, jucer.join("\n")+"\n")
