@@ -9,3 +9,6 @@ todo.txt
 notes.txt
 stack.yaml.lock
 .stack-work
+*.o
+*.hi
+*_stub.h
