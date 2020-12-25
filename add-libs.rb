@@ -6,9 +6,14 @@
 # couple of extra libraries.
 #
 # Library names are added to the XCODE_MAC tag, and library paths are added to
-# the libraryPath field of the CONFIGURATION tag.  Note: this doesn't parse the
-# XML in any way, it just does a dumb line substitution, so it assumes that the
-# XCODE_MAC and libraryPath lines don't have anything else on them.
+# the libraryPath field of the Debug CONFIGURATION tag.
+#
+# Note: this doesn't parse the XML in any way, it just does a dumb line
+# substitution, so it assumes that the XCODE_MAC and libraryPath lines don't
+# have anything else on them. TODO: fix this
+#
+# Note: we only modify the Debug configuration, we leave the Relase
+# configuration untouched. TODO: fix this
 #
 # When it searches for libraries, it filters out certain alternate builds like
 # profiling; see AVOID_SUFFIXES.
