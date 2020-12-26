@@ -739,7 +739,7 @@
 		F87441FC5B121364A13F7747 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -747,7 +747,7 @@
 		200D6BEC95AD971F1FC7C202 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -870,7 +870,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
 				);
 				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
@@ -1006,7 +1006,7 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
@@ -1141,7 +1141,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
 				);
 				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
@@ -1278,7 +1278,7 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
@@ -1409,7 +1409,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
@@ -1539,7 +1539,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
 				);
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
@@ -1668,7 +1668,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
@@ -1798,7 +1798,7 @@
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/rts/\"",
 				);
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_HEADER_SEARCH_PATHS = (
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
