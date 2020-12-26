@@ -103,7 +103,7 @@ lib_names += EXTRA_LINK_LIBS
 
 lib_names_string = lib_names.join("&#10;")
 xcode_mac_line = (<<-END).chomp
-  <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="#{lib_names_string}">
+  externalLibraries="#{lib_names_string}"
 END
 
 library_path_string = lib_dirs.join("&#10;")
@@ -125,7 +125,7 @@ def replace_line(lines, findMe, replaceWith, expectedNum)
   }
 end
 
-jucer = replace_line(jucer, "<XCODE_MAC", xcode_mac_line, 1)
+jucer = replace_line(jucer, "externalLibraries", xcode_mac_line, 1)
 jucer = replace_line(jucer, "libraryPath", library_path_line, 2)
 
 File.write(jucerFile, jucer.join("\n")+"\n")

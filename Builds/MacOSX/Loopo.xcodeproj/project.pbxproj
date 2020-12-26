@@ -878,7 +878,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1014,7 +1014,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1149,7 +1149,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
@@ -1286,7 +1286,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
@@ -1417,7 +1417,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv";
+				OTHER_LDFLAGS = "-lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1547,7 +1547,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
-				OTHER_LDFLAGS = "-lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv";
+				OTHER_LDFLAGS = "-lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1676,6 +1676,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
+				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				SKIP_INSTALL = YES;
@@ -1806,6 +1807,7 @@
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
+				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				SKIP_INSTALL = YES;
