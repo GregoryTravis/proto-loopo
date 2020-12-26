@@ -23,7 +23,7 @@ void Wrapper::init() {
   conf.rts_opts_enabled = RtsOptsAll;
 
   int argc = 4;
-  char* argv[] = { "main", "+RTS", "-H134217728", "-RTS" };
+  char* argv[] = { (char*)"main", (char*)"+RTS", (char*)"-H134217728", (char*)"-RTS" };
   //int argc = 1;
   //char* argv[] = { "main" };
   char** argv_ = argv;

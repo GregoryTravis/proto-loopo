@@ -133,7 +133,7 @@ AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
   // 2 in 1 out -> speedRatio = 2
   double speedRatio = ((double)inbuf.getNumSamples()) / ((double)outbuf->getNumSamples());
   for (int c = 0; c < 2; ++c) {
-    auto numInputSamplesRead = interpolator.process(speedRatio,
+    /*auto numInputSamplesRead =*/ interpolator.process(speedRatio,
         inbuf.getReadPointer(c),
         outbuf->getWritePointer(c),
         outbuf->getNumSamples());
