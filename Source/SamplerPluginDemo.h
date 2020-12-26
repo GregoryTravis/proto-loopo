@@ -2782,10 +2782,8 @@ private:
         wrapper.frobb(abp, len);
         juce::Logger::getCurrentLogger()->writeToLog("frobb 1 " + std::to_string(abp[0]) + " " + std::to_string(abp[len-1]) + " " + std::to_string(len));
 
-        int time;
-        juce::MidiMessage m;
-     
-        for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);) {
+        for (const juce::MidiMessageMetadata mmm : midiMessages) {
+          juce::MidiMessage m = mmm.getMessage();
           //juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());
           loopBank->update(m);
         }
