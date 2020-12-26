@@ -102,12 +102,12 @@ puts "lib_dirs #{lib_dirs}"
 lib_names += EXTRA_LINK_LIBS
 
 lib_names_string = lib_names.join("&#10;")
-xcode_mac_line = <<-END
+xcode_mac_line = (<<-END).chomp
   <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="#{lib_names_string}">
 END
 
 library_path_string = lib_dirs.join("&#10;")
-library_path_line = <<-END
+library_path_line = (<<-END).chomp
   libraryPath="#{library_path_string}"/>
 END
 
