@@ -36,14 +36,14 @@ end
 # Verify that all the library files are the same, and return one.
 def check_libs_same(files)
   lens = files.map { |f| File.size(f) }
-  puts "lens #{lens}"
+  #puts "lens #{lens}"
   sames = files[1..-1].map { |other|
     ok = system("diff #{files[0]} #{other}")
     ret = $?
     assert ok
     [ok, ret]
   }
-  puts "sames #{sames}"
+  #puts "sames #{sames}"
   files[0]
 end
 
@@ -53,7 +53,7 @@ jucerFile = ARGV[0]
 
 # Like 'primitive-0.6.4.0'
 versioned_lib_names = `stack ls dependencies --separator='-'`.split("\n")
-puts versioned_lib_names.join('+')
+#puts versioned_lib_names.join('+')
 
 versioned_lib_names += EXTRA_LIBS
 
@@ -82,8 +82,8 @@ lib2files = Hash[versioned_lib_names.map { |vln|
   file = check_libs_same(files)
   [vln, file]
 }]
-puts lib2files
-puts lib2files.values
+#puts lib2files
+#puts lib2files.values
 
 def lib_dir_and_name(file)
   m = /^(?<path>.*\/)lib(?<name>[^\/].*)\.a$/.match(file)
@@ -96,8 +96,8 @@ end
 # lib_dirs = lib2files.values.map(&:lib_dir)
 #puts "HUH #{lib2files.values} #{lib2files.values.class}"
 lib_dirs, lib_names = lib2files.values.map { |p| lib_dir_and_name(p) }.transpose
-puts "lib_names #{lib_names}"
-puts "lib_dirs #{lib_dirs}"
+#puts "lib_names #{lib_names}"
+#puts "lib_dirs #{lib_dirs}"
 
 lib_names += EXTRA_LINK_LIBS
 
