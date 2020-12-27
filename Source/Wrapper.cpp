@@ -15,13 +15,15 @@ static int initted = 0;
 
 void assert(bool b, const char *s) {
   if (!b) {
-    std::cerr << "Error: " << s;
+    std::cerr << "Error: " << s << "\n";
     exit(1);
   }
 }
 
 Wrapper::Wrapper() {
   init();
+  std::cout << std::unitbuf;
+  std::cerr << std::unitbuf;
 }
 
 void Wrapper::init() {
@@ -51,20 +53,31 @@ int Wrapper::fuu() {
   return foo(12, 23);
 }
 
-
 void Wrapper::frobb(float *f, int len) {
   hs_frobb(f, len);
 }
 
 void Wrapper::frobbMidi(Midi *midis, int count) {
-  assert (sizeof (midis) == 4, "");
-  assert (sizeof (count) == 4, "");
+  //std::cout << "midis " << sizeof(midis) << "\n";
+  assert (sizeof (midis) == 8, "m");
+  assert (sizeof (count) == 4, "c");
 
-  assert (sizeof (*midis) == 8, "");
-  assert (sizeof (midis->isOn) == 4, "");
-  assert (sizeof (midis->noteNumber) == 4, "");
+  assert (sizeof (*midis) == 8, "*m");
+  Midi m;
+  assert (sizeof (m) == 8, ".m");
+  assert (sizeof (Midi) == 8, ".M");
+  //std::cout << "bool " << sizeof(bool) << "\n";
+  //std::cout << "Midi " << (&m - &m) << " " << (((char*)&(m.isOn)) - ((char*)&m)) << " " << (((char*)&(m.noteNumber)) - ((char*)&m)) << "\n";
+  assert ((((char*)&(m.noteNumber)) - ((char*)&m)) == 4, "align");
+  assert (sizeof (midis->isOn) == 1, "o");
+  assert (sizeof (bool) == 1, "b");
+  assert (sizeof (midis->noteNumber) == 4, "nn");
 
+  //std::cout << "calling\n";
   hs_frobb_midi(midis, count);
+  //std::cout << "called\n";
+  /*
+  */
 }
 
 Wrapper::~Wrapper() {

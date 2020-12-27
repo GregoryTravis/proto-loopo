@@ -2780,7 +2780,7 @@ private:
         abp[0] = 0.1;
         abp[len-1] = 0.15;
         wrapper.frobb(abp, len);
-        juce::Logger::getCurrentLogger()->writeToLog("frobb 1 " + std::to_string(abp[0]) + " " + std::to_string(abp[len-1]) + " " + std::to_string(len));
+        //juce::Logger::getCurrentLogger()->writeToLog("frobb 1 " + std::to_string(abp[0]) + " " + std::to_string(abp[len-1]) + " " + std::to_string(len));
 
         std::vector<Midi> midis;
         for (const juce::MidiMessageMetadata mmm : midiMessages) {
@@ -2792,8 +2792,14 @@ private:
             midis.push_back(midi);
           }
         }
-        /*
+        if (midis.size() > 0) {
+          juce::Logger::getCurrentLogger()->writeToLog("frobb before " + std::to_string(midis.data()[0].noteNumber));
+        }
         wrapper.frobbMidi(midis.data(), midis.size());
+        if (midis.size() > 0) {
+          juce::Logger::getCurrentLogger()->writeToLog("frobb after " + std::to_string(midis.data()[0].noteNumber));
+        }
+        /*
         */
 
         for (const juce::MidiMessageMetadata mmm : midiMessages) {

@@ -6,6 +6,7 @@ import Foreign.C.Types
 import Foreign.Ptr
 import Foreign.ForeignPtr
 import Foreign.Storable
+import System.IO (stdout, stderr, hSetBuffering, BufferMode(..))
 
 foreign export ccall foo :: Word32 -> Word32 -> IO Word32
 
@@ -37,7 +38,7 @@ hs_frobb ptr len = do
         last :: Int
         last = (fromIntegral len) - 1
 
-data CMidi = CMidi CBool CInt
+data CMidi = CMidi CBool CInt deriving Show
 
 instance Storable CMidi where
   sizeOf _ = 8
@@ -53,8 +54,16 @@ instance Storable CMidi where
 foreign export ccall hs_frobb_midi :: Ptr CMidi -> CInt -> IO ()
 
 hs_frobb_midi ptr len = do
+  hSetBuffering stdout NoBuffering
+  hSetBuffering stderr NoBuffering
+  --putStrLn ("LEN " ++ show len)
   fptr <- newForeignPtr_ ptr
   let mv = MV.unsafeFromForeignPtr fptr 0 (fromIntegral len)
-  CMidi isOn noteNumber <- MV.read mv 0
-  MV.write mv 0 (CMidi isOn (noteNumber + 1))
-  return ()
+  if len == 0
+    then return () -- putStrLn "Empty"
+    else do
+      old@(CMidi isOn noteNumber) <- MV.read mv 0
+      let nu = CMidi isOn (noteNumber + 1) 
+      MV.write mv 0 nu
+      putStrLn ("wrote " ++ show old ++ " " ++ show nu)
+      return ()
