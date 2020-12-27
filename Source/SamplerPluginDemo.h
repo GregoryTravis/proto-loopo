@@ -2782,6 +2782,20 @@ private:
         wrapper.frobb(abp, len);
         juce::Logger::getCurrentLogger()->writeToLog("frobb 1 " + std::to_string(abp[0]) + " " + std::to_string(abp[len-1]) + " " + std::to_string(len));
 
+        std::vector<Midi> midis;
+        for (const juce::MidiMessageMetadata mmm : midiMessages) {
+          juce::MidiMessage m = mmm.getMessage();
+          if (m.isNoteOnOrOff()) {
+            Midi midi;
+            midi.isOn = m.isNoteOn();
+            midi.noteNumber = m.getNoteNumber();
+            midis.push_back(midi);
+          }
+        }
+        /*
+        wrapper.frobbMidi(midis.data(), midis.size());
+        */
+
         for (const juce::MidiMessageMetadata mmm : midiMessages) {
           juce::MidiMessage m = mmm.getMessage();
           //juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());

@@ -1,3 +1,6 @@
+#include <iostream>
+//#include <string>
+
 //#include <JuceHeader.h>
 
 //#include "Stg.h"
@@ -9,6 +12,13 @@
 #include "Foo_stub.h"
 
 static int initted = 0;
+
+void assert(bool b, const char *s) {
+  if (!b) {
+    std::cerr << "Error: " << s;
+    exit(1);
+  }
+}
 
 Wrapper::Wrapper() {
   init();
@@ -44,6 +54,17 @@ int Wrapper::fuu() {
 
 void Wrapper::frobb(float *f, int len) {
   hs_frobb(f, len);
+}
+
+void Wrapper::frobbMidi(Midi *midis, int count) {
+  assert (sizeof (midis) == 4, "");
+  assert (sizeof (count) == 4, "");
+
+  assert (sizeof (*midis) == 8, "");
+  assert (sizeof (midis->isOn) == 4, "");
+  assert (sizeof (midis->noteNumber) == 4, "");
+
+  hs_frobb_midi(midis, count);
 }
 
 Wrapper::~Wrapper() {

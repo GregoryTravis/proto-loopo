@@ -36,3 +36,25 @@ hs_frobb ptr len = do
   where g x = x * 3 + 0.003
         last :: Int
         last = (fromIntegral len) - 1
+
+data CMidi = CMidi CBool CInt
+
+instance Storable CMidi where
+  sizeOf _ = 8
+  alignment = sizeOf
+  peek ptr = do
+    b <- peekByteOff ptr 0
+    nn <- peekByteOff ptr 4
+    return $ CMidi b nn
+  poke ptr (CMidi isOn nn) = do
+    pokeByteOff ptr 0 isOn
+    pokeByteOff ptr 4 nn
+
+foreign export ccall hs_frobb_midi :: Ptr CMidi -> CInt -> IO ()
+
+hs_frobb_midi ptr len = do
+  fptr <- newForeignPtr_ ptr
+  let mv = MV.unsafeFromForeignPtr fptr 0 (fromIntegral len)
+  CMidi isOn noteNumber <- MV.read mv 0
+  MV.write mv 0 (CMidi isOn (noteNumber + 1))
+  return ()
