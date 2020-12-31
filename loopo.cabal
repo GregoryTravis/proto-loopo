@@ -9,16 +9,65 @@ author:              Author name here
 maintainer:          example@example.com
 copyright:           2019 Author name here
 category:            Web
-build-type:          Simple
+build-type:          Custom
 cabal-version:       >=1.10
 --extra-source-files:  README.md
 
---executable tmi
+extra-source-files:
+  Makefile
+  cpp/utils.cpp
+  cpp/utils.hpp
+
 library
   hs-source-dirs:      Source
-  --main-is:             Main.hs
+  exposed-modules:
+      Foreign.Hoppy.Example.Internal.EmptyCpp
+    , Foreign.Hoppy.Example.Std
+    , Foreign.Hoppy.Example.Utils
   other-modules:       Foo
   default-language:    Haskell2010
-  --ghc-options:         -threaded
-  build-depends:       base >= 4.7 && < 5,
-                       vector
+  ghc-options: -W -fwarn-incomplete-patterns -fwarn-unused-do-bind
+  include-dirs: /Users/gmt/JUCE/modules/
+  --cc-options: -I/Users/gmt/JUCE/modules/
+  build-depends:
+      base
+    , vector
+    --, hoppy-example-cpp >= 0.1 && <0.2
+    , hoppy-runtime >=0.8 && <0.9
+  other-extensions:
+      FlexibleInstances
+    , MultiParamTypeClasses
+    , OverlappingInstances
+    , TypeSynonymInstances
+    , UndecidableInstances
+  ghc-options: -W -fwarn-incomplete-patterns -fwarn-unused-do-bind
+  -- This causes us to link against libexample.so:
+  extra-libraries: example
+
+-- executable hoppy-example
+  -- hs-source-dirs: src-exe
+  -- main-is: Main.hs
+  -- build-depends:
+      -- base
+    -- , hoppy-example
+  -- default-language: Haskell2010
+  -- ghc-options: -W -fwarn-incomplete-patterns -fwarn-unused-do-bind -dynamic
+-- 
+-- test-suite hoppy-example-tests
+  -- type: exitcode-stdio-1.0
+  -- hs-source-dirs: tests
+  -- main-is: Main.hs
+  -- default-language: Haskell2010
+  -- ghc-options: -W -fwarn-incomplete-patterns -fwarn-unused-do-bind -dynamic
+  -- build-depends:
+      -- base
+    -- , hoppy-example
+    -- , hoppy-runtime >=0.8 && <0.9
+    -- , HUnit
+
+custom-setup
+  setup-depends:
+      base
+    , Cabal
+    , hoppy-runtime >=0.8 && <0.9
+    --, hoppy-example-generator >=0.1 && <0.2

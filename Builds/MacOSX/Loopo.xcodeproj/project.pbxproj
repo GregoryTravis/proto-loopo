@@ -220,13 +220,6 @@
 			path = ../../Source/DemoUtilities.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		2D96C0643AF55D866DD9DA5F = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = "Foo_stub.h";
-			path = "../../Source/Foo_stub.h";
-			sourceTree = "SOURCE_ROOT";
-		};
 		3731BC0917526420ED255398 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -253,6 +246,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = JucePluginDefines.h;
 			path = ../../JuceLibraryCode/JucePluginDefines.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		4934B4307F41FC2704F188ED = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "Foo_stub.h";
+			path = "../../dist/build/Foo_stub.h";
 			sourceTree = "SOURCE_ROOT";
 		};
 		49996B2976F16E1E6065A57D = {
@@ -580,7 +580,7 @@
 		A6F00518FA3644384663989B = {
 			isa = PBXGroup;
 			children = (
-				2D96C0643AF55D866DD9DA5F,
+				4934B4307F41FC2704F188ED,
 				E66D01905D808F167E8A2825,
 				42D97E582C95FD8CB1AF7948,
 				94DBCCADD71BE5A7766CB83F,
@@ -848,7 +848,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
@@ -858,7 +858,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST3/";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"dist/build/10#/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
@@ -876,12 +876,12 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-shorten-64-to-32";
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-Ifmrv7z06Z06fwlEFBXnpU -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -986,7 +986,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
@@ -996,7 +996,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST3/";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"dist/build/10#/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
@@ -1015,12 +1015,12 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-shorten-64-to-32";
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-Ifmrv7z06Z06fwlEFBXnpU -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1125,7 +1125,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
@@ -1135,7 +1135,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/Components/";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"dist/build/10#/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
@@ -1153,12 +1153,12 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-shorten-64-to-32";
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-Ifmrv7z06Z06fwlEFBXnpU -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
@@ -1264,7 +1264,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
@@ -1274,7 +1274,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/Components/";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"dist/build/10#/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
@@ -1293,12 +1293,12 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-shorten-64-to-32";
-				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
+				OTHER_LDFLAGS = "-bundle -lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-Ifmrv7z06Z06fwlEFBXnpU -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
@@ -1401,7 +1401,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
@@ -1410,7 +1410,7 @@
 				INFOPLIST_PREPROCESS = NO;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"dist/build/10#/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
@@ -1427,12 +1427,12 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-shorten-64-to-32";
-				OTHER_LDFLAGS = "-lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
+				OTHER_LDFLAGS = "-lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-Ifmrv7z06Z06fwlEFBXnpU -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1533,7 +1533,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
@@ -1542,7 +1542,7 @@
 				INFOPLIST_PREPROCESS = NO;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"dist/build/10#/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
@@ -1560,12 +1560,12 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-shorten-64-to-32";
-				OTHER_LDFLAGS = "-lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-IIsHyREJmEr5rZYBnMM7nk -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
+				OTHER_LDFLAGS = "-lSamplerPlugin -lHSarray-0.5.3.0 -lHSbase-4.12.0.0 -lHSdeepseq-1.4.4.0 -lHSghc-prim-0.5.3 -lHSinteger-gmp-1.0.2.0 -lHSloopo-0.1.0.0-Ifmrv7z06Z06fwlEFBXnpU -lHSprimitive-0.6.4.0-ILgywxtLpvnAOlEISPpP5b -lHStransformers-0.5.6.2 -lHSvector-0.12.0.3-LfvlcMFJAcY18uD1Y2O5Ig -lCffi -lHSrts -liconv -Wl,-no_compact_unwind";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JUCE.Loopo;
 				PRODUCT_NAME = "SamplerPlugin";
 				USE_HEADERMAP = NO;
@@ -1667,7 +1667,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
@@ -1675,7 +1675,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"dist/build/10#/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
@@ -1692,7 +1692,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
@@ -1800,7 +1800,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
@@ -1808,7 +1808,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
+					"\"dist/build/10#/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/array-0.5.3.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/base-4.12.0.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/deepseq-1.4.4.0/\"",
 					"\"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/ghc-prim-0.5.3/\"",
@@ -1826,7 +1826,7 @@
 					"$(HOME)/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"../../JuceLibraryCode",
 					"$(HOME)/JUCE/modules",
-					"/Users/gmt/Loopo/.stack-work/dist/x86_64-osx/Cabal-2.4.0.1/build/",
+					"/Users/gmt/Loopo/dist/build",
 					"/Users/gmt/.stack/programs/x86_64-osx/ghc-8.6.5/lib/ghc-8.6.5/include/",
 					"$(HOME)/JUCE/modules/juce_audio_plugin_client",
 				);
