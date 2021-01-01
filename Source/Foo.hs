@@ -59,6 +59,7 @@ hs_frobb_midi ptr len = do
   hSetBuffering stderr NoBuffering
   --putStrLn ("LEN " ++ show len)
   mm <- juceMidiMessage_new
+  putStrLn $ show mm
   fptr <- newForeignPtr_ ptr
   let mv = MV.unsafeFromForeignPtr fptr 0 (fromIntegral len)
   if len == 0

@@ -13,6 +13,9 @@ build-type:          Custom
 cabal-version:       >=1.10
 --extra-source-files:  README.md
 
+--extra-lib-dirs:
+  --cpp
+
 extra-source-files:
   Makefile
   cpp/utils.cpp
@@ -29,10 +32,13 @@ library
   ghc-options: -W -fwarn-incomplete-patterns -fwarn-unused-do-bind
   include-dirs: /Users/gmt/JUCE/modules/
   --cc-options: -I/Users/gmt/JUCE/modules/
+  --extra-lib-dirs: cpp
   build-depends:
       base
+    , array
     , vector
-    --, hoppy-example-cpp >= 0.1 && <0.2
+    , hoppy-example-cpp >= 0.1 && <0.2
+    , hoppy-example-generator >=0.1 && <0.2
     , hoppy-runtime >=0.8 && <0.9
   other-extensions:
       FlexibleInstances
@@ -42,6 +48,7 @@ library
     , UndecidableInstances
   ghc-options: -W -fwarn-incomplete-patterns -fwarn-unused-do-bind
   -- This causes us to link against libexample.so:
+  --extra-libraries: /Users/gmt/loopo/dist/build/libexample.so
   extra-libraries: example
 
 -- executable hoppy-example
@@ -66,8 +73,11 @@ library
     -- , HUnit
 
 custom-setup
+  --extra-lib-dirs: cpp
   setup-depends:
       base
+    , array
     , Cabal
+    , hoppy-example-cpp >= 0.1 && <0.2
     , hoppy-runtime >=0.8 && <0.9
-    --, hoppy-example-generator >=0.1 && <0.2
+    , hoppy-example-generator >=0.1 && <0.2

@@ -1,27 +1,31 @@
 PROJUCER=~/JUCE/Projucer.app/Contents/MacOS/Projucer
 
-# all: run
+all: run
 
 # clean:
 # 	rm Source/*.o Source/*.hi Source/*_stub.h
 # 	rm libFoo.a
 
-lib:
-	stack build
+configure:
+	cabal configure --extra-lib-dirs=/Users/gmt/Loopo/dist/build/
 
-exe: # lib
+lib: configure update-proj
+	#stack build
+	cabal build
+
+exe: lib libexample
 	xcodebuild -project Builds/MacOSX/Loopo.xcodeproj
 
 run: exe
 	/Users/gmt/JUCE/extras/AudioPluginHost/Builds/MacOSX/build/Debug/AudioPluginHost.app/Contents/MacOS/AudioPluginHost -NSDocumentRevisionsDebugMode YES loopo.filtergraph
 
-update-proj:
+update-proj: Loopo.jucer
 	#bin/add-libs.rb Loopo.jucer
 	$(PROJUCER) --resave Loopo.jucer
 
 ####################
 
-.PHONY: all
+.PHONY: libexample
 
 INCS=-I/Users/gmt/JUCE/modules/
 
@@ -32,7 +36,7 @@ CFLAGS = -O2 $(INCS) -DJUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1 -DDEBUG=1 --std=c+
 
 .PHONY: clean install
 
-all: cpp/libexample.so
+libexample: cpp/libexample.so
 
 cpp/libexample.so: cpp/utils.o cpp/gen_utils.o cpp/gen_std.o #cpp/juce_MidiMessage.o
 ifeq ($(OS),darwin)
