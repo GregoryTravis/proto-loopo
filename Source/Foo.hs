@@ -3,6 +3,7 @@ module Foo (foo) where
 import Data.Word
 import qualified Data.Vector.Storable.Mutable as MV
 import Foreign.C.Types
+import Foreign.Hoppy.Example.Utils (juceMidiMessage_new)
 import Foreign.Ptr
 import Foreign.ForeignPtr
 import Foreign.Storable
@@ -57,6 +58,8 @@ hs_frobb_midi ptr len = do
   hSetBuffering stdout NoBuffering
   hSetBuffering stderr NoBuffering
   --putStrLn ("LEN " ++ show len)
+  mm <- juceMidiMessage_new
+  putStrLn $ show mm
   fptr <- newForeignPtr_ ptr
   let mv = MV.unsafeFromForeignPtr fptr 0 (fromIntegral len)
   if len == 0

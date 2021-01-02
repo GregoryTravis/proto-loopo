@@ -12,3 +12,4 @@ stack.yaml.lock
 *.o
 *.hi
 *_stub.h
+dist

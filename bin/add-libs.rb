@@ -19,7 +19,7 @@
 # identical, then returns one of them.
 
 # Libs to find in ~/.stack
-EXTRA_LIBS = ['Cffi']
+EXTRA_LIBS = ['Cffi', 'libHSrts', 'libgmp']
 
 # Libs to link in (no path needed)
 EXTRA_LINK_LIBS = ["iconv"]
@@ -47,12 +47,13 @@ def check_libs_same(files)
   files[0]
 end
 
-assert ARGV.length == 1
-
-jucerFile = ARGV[0]
+#assert ARGV.length == 1
+#jucerFile = ARGV[0]
+jucerFile, *versioned_lib_names = ARGV
+puts "VLN #{versioned_lib_names}"
 
 # Like 'primitive-0.6.4.0'
-versioned_lib_names = `stack ls dependencies --separator='-'`.split("\n")
+#versioned_lib_names = `stack ls dependencies --separator='-'`.split("\n")
 #puts versioned_lib_names.join('+')
 
 versioned_lib_names += EXTRA_LIBS
@@ -61,20 +62,30 @@ versioned_lib_names += EXTRA_LIBS
 # versioned_lib_names -= ["loopo-0.1.0.0"]
 
 # rts is libHSrts
-versioned_lib_names -= ["rts-1.0"]
-versioned_lib_names << "libHSrts"
+#versioned_lib_names -= ["rts-1.0"]
+#versioned_lib_names << "libHSrts"
 
 def should_avoid(f)
   AVOID_SUFFIXES.map { |suf| f.include?("#{suf}.a") }.any?
 end
 
-# Find each library in ~/.stack
+libdirs = ["~/.cabal", "~/Loopo/dist/build", "/usr/local/Cellar/ghc/8.6.4/lib/ghc-8.6.4", "/usr/local/Cellar/ghc/8.6.4/libexec"]
+
+# Find each library in ~/.cabal
 lib2files = Hash[versioned_lib_names.map { |vln|
   puts "finding #{vln}"
-  files = `find ~/.stack | grep #{vln}`.split("\n")
-  files += `find #{Dir.pwd}/.stack-work | grep #{vln}`.split("\n")
+  files = libdirs.map { |dir|
+    `find #{dir} | grep #{vln}`.split("\n")
+  }.flatten(1)
+  # files = `find ~/.cabal | grep #{vln}`.split("\n")
+  # files += `find /Users/gmt/Loopo/dist/build | grep #{vln}`.split("\n")
+  # files = `find ~/.stack | grep #{vln}`.split("\n")
+  # files += `find #{Dir.pwd}/.stack-work | grep #{vln}`.split("\n")
+  # puts files
   files = files.select { |f| f.end_with?(".a") }
   files = files.select { |f| !should_avoid(f) }
+  # puts "======"
+  # puts files
   #puts vln, files
   #puts files
   #files.map { |f| puts `ls -l #{f}` }
@@ -82,11 +93,12 @@ lib2files = Hash[versioned_lib_names.map { |vln|
   file = check_libs_same(files)
   [vln, file]
 }]
-#puts lib2files
-#puts lib2files.values
+lib2files['example'] = '/Users/gmt/.cabal/lib/x86_64-osx-ghc-8.6.4/hoppy-example-cpp-0.1.0-DqdXGniVOOZGxc3MSxUgf6/libexample.so'
+puts lib2files
+puts lib2files.values
 
 def lib_dir_and_name(file)
-  m = /^(?<path>.*\/)lib(?<name>[^\/].*)\.a$/.match(file)
+  m = /^(?<path>.*\/)lib(?<name>[^\/].*)\.(a|so)$/.match(file)
   assert m != nil
   #puts "MM #{m}"
   [m['path'], m['name']]
@@ -96,8 +108,8 @@ end
 # lib_dirs = lib2files.values.map(&:lib_dir)
 #puts "HUH #{lib2files.values} #{lib2files.values.class}"
 lib_dirs, lib_names = lib2files.values.map { |p| lib_dir_and_name(p) }.transpose
-#puts "lib_names #{lib_names}"
-#puts "lib_dirs #{lib_dirs}"
+puts "lib_names #{lib_names}"
+puts "lib_dirs #{lib_dirs}"
 
 lib_names += EXTRA_LINK_LIBS
 
