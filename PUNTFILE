@@ -1,0 +1,5 @@
+Punting because I'm trying to bring the pieces of the hoppy example (with a
+small Juce class definition added) into this, and build it with stack. But I
+don't know how to tell stack how to use local hoppy packages, so then I build
+with cabal, and at that point, why don't I just use cabal and not bring the
+hoppy pieces in? So doing that on hs-ffi-hoppy-cabal.
