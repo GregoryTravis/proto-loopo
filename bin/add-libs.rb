@@ -93,7 +93,7 @@ lib2files = Hash[versioned_lib_names.map { |vln|
   file = check_libs_same(files)
   [vln, file]
 }]
-lib2files['example'] = '/Users/gmt/.cabal/lib/x86_64-osx-ghc-8.6.4/hoppy-example-cpp-0.1.0-DqdXGniVOOZGxc3MSxUgf6/libexample.so'
+lib2files['example'] = '/Users/gmt/.cabal/lib/x86_64-osx-ghc-8.6.4/hoppy-example-cpp-0.1.0-DqdXGniVOOZGxc3MSxUgf6/libexample.a'
 puts lib2files
 puts lib2files.values
 
