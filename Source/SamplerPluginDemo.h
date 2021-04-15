@@ -101,6 +101,7 @@ std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
     ScopedTimeMeasurement m(elapsed);
 
     for (DirectoryEntry entry : RangedDirectoryIterator (File(dirname), false)) {
+      //juce::Logger::getCurrentLogger()->writeToLog("midi " + entry.getFile());
       abs->push_back(readLoop(entry.getFile()));
     }
   }
