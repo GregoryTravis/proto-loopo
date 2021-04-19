@@ -2099,6 +2099,7 @@ public:
 
         addAndMakeVisible (waveformEditor);
         addAndMakeVisible (loadNewSampleButton);
+        addAndMakeVisible (loadNewBankButton);
         addAndMakeVisible (undoButton);
         addAndMakeVisible (redoButton);
 
@@ -2120,6 +2121,30 @@ public:
             fileChooser.launchAsync (FileBrowserComponent::FileChooserFlags::openMode |
                                      FileBrowserComponent::FileChooserFlags::canSelectFiles,
                                      setReader);
+        };
+
+        auto setBankReader = [this] (const FileChooser& fc)
+        {
+            const auto result = fc.getResult();
+
+            if (result != File())
+            {
+              juce::Logger::getCurrentLogger()->writeToLog("load bank " + result.getFullPathName());
+
+              /*
+                undoManager.beginNewTransaction();
+                auto readerFactory = new FileAudioFormatReaderFactory (result);
+                dataModel.setSampleReader (std::unique_ptr<AudioFormatReaderFactory> (readerFactory),
+                                           &undoManager);
+               */
+            }
+        };
+
+        loadNewBankButton.onClick = [this, setBankReader]
+        {
+            fileChooser.launchAsync (FileBrowserComponent::FileChooserFlags::openMode |
+                                     FileBrowserComponent::FileChooserFlags::canSelectDirectories,
+                                     setBankReader);
         };
 
         addAndMakeVisible (centreFrequency);
@@ -2202,6 +2227,7 @@ private:
         auto topBar = bounds.removeFromTop (50);
         auto padding = 4;
         loadNewSampleButton .setBounds (topBar.removeFromRight (100).reduced (padding));
+        loadNewBankButton   .setBounds (topBar.removeFromRight (100).reduced (padding));
         redoButton          .setBounds (topBar.removeFromRight (100).reduced (padding));
         undoButton          .setBounds (topBar.removeFromRight (100).reduced (padding));
         centreFrequencyLabel.setBounds (topBar.removeFromLeft  (100).reduced (padding));
@@ -2243,6 +2269,7 @@ private:
     DataModel dataModel;
     WaveformEditor waveformEditor;
     TextButton loadNewSampleButton { "Load New Sample" };
+    TextButton loadNewBankButton { "Load New Bank" };
     TextButton undoButton { "Undo" };
     TextButton redoButton { "Redo" };
     Slider centreFrequency;
