@@ -246,7 +246,7 @@ namespace IDs
 
 DECLARE_ID (DATA_MODEL)
 DECLARE_ID (sampleReader)
-DECLARE_ID (loopBank)
+DECLARE_ID (loopBankPath)
 DECLARE_ID (centreFrequencyHz)
 DECLARE_ID (loopMode)
 // DECLARE_ID (loopBankPathLabel)
@@ -266,7 +266,7 @@ DECLARE_ID (totalRange)
 DECLARE_ID (visibleRange)
 
 DECLARE_ID (PLUGIN_PARAMS)
-DECLARE_ID (loopBankPath)
+DECLARE_ID (loopBankPathParam)
 
 #undef DECLARE_ID
 
@@ -839,6 +839,7 @@ struct VariantConverter<std::shared_ptr<AudioFormatReaderFactory>>
     : GenericVariantConverter<std::shared_ptr<AudioFormatReaderFactory>>
 {};
 
+// TODO can remove?
 template<>
 struct VariantConverter<std::shared_ptr<LoopBank>>
     : GenericVariantConverter<std::shared_ptr<LoopBank>>
@@ -1146,7 +1147,7 @@ public:
     public:
         virtual ~Listener() noexcept = default;
         virtual void sampleReaderChanged (std::shared_ptr<AudioFormatReaderFactory>) {}
-        virtual void loopBankChanged (std::shared_ptr<LoopBank>) {}
+        virtual void loopBankPathChanged (String) {}
         virtual void centreFrequencyHzChanged (double) {}
         virtual void loopModeChanged (LoopMode) {}
         virtual void loopPointsSecondsChanged (Range<double>) {}
@@ -1160,7 +1161,7 @@ public:
         : audioFormatManager (&audioFormatManagerIn),
           valueTree (vt),
           sampleReader      (valueTree, IDs::sampleReader,      nullptr),
-          loopBank          (valueTree, IDs::loopBank,          nullptr),
+          loopBankPath      (valueTree, IDs::loopBankPath,          nullptr),
           centreFrequencyHz (valueTree, IDs::centreFrequencyHz, nullptr),
           loopMode          (valueTree, IDs::loopMode,          nullptr, LoopMode::none),
           loopPointsSeconds (valueTree, IDs::loopPointsSeconds, nullptr)
@@ -1193,15 +1194,16 @@ public:
                               undoManager);
     }
 
-    std::shared_ptr<LoopBank> getLoopBank() const
-    {
-      return loopBank != nullptr ? loopBank.get() : nullptr;
-    }
+    /* String getLoopBankPath() const */
+    /* { */
+    /*   return loopBankPath != nullptr ? loopBankPath.get() : nullptr; */
+    /* } */
 
-    void setLoopBank (std::unique_ptr<LoopBank> value,
+    void setLoopBankPath (String value,
                       UndoManager* undoManager)
     {
-      loopBank.setValue (move (value), undoManager);
+      // TODO remove move()?
+      loopBankPath.setValue (value, undoManager);
     }
 
     double getSampleLengthSeconds() const
@@ -1278,11 +1280,11 @@ private:
             sampleReader.forceUpdateOfCachedValue();
             listenerList.call ([this] (Listener& l) { l.sampleReaderChanged (sampleReader); });
         }
-        else if (property == IDs::loopBank)
+        else if (property == IDs::loopBankPath)
         {
-            loopBank.forceUpdateOfCachedValue();
+            loopBankPath.forceUpdateOfCachedValue();
             //juce::Logger::getCurrentLogger()->writeToLog("VT lb changed");
-            listenerList.call ([this] (Listener& l) { l.loopBankChanged (loopBank); });
+            listenerList.call ([this] (Listener& l) { l.loopBankPathChanged (loopBankPath); });
         }
         else if (property == IDs::centreFrequencyHz)
         {
@@ -1311,7 +1313,7 @@ private:
     ValueTree valueTree;
 
     CachedValue<std::shared_ptr<AudioFormatReaderFactory>> sampleReader;
-    CachedValue<std::shared_ptr<LoopBank>> loopBank;
+    CachedValue<String> loopBankPath;
     CachedValue<double> centreFrequencyHz;
     CachedValue<LoopMode> loopMode;
     CachedValue<Range<double>> loopPointsSeconds;
@@ -2166,9 +2168,10 @@ public:
             {
               juce::Logger::getCurrentLogger()->writeToLog("load bank " + result.getFullPathName());
               undoManager.beginNewTransaction();
-              auto loopBank = new LoopBank(result.getFullPathName(), 150);
+              /* auto loopBank = new LoopBank(result.getFullPathName(), 150); */
               // TODO: delete the old one?
-              dataModel.setLoopBank(std::unique_ptr<LoopBank>(loopBank), &undoManager);
+              /* dataModel.setLoopBankPath(std::unique_ptr<LoopBank>(loopBank), &undoManager); */
+              dataModel.setLoopBankPath(result.getFullPathName(), &undoManager);
               loopBankPathLabel.setText("Loop Bank: " + result.getFileName(), NotificationType::dontSendNotification);
 
               /*
@@ -2352,8 +2355,10 @@ class SamplerAudioProcessor  : public AudioProcessor
 public:
     SamplerAudioProcessor()
         : AudioProcessor (BusesProperties().withOutput ("Output", AudioChannelSet::stereo(), true))
+        , loopBankPath(nullptr)
+        , loopBank(nullptr)
         , processorParams(IDs::PLUGIN_PARAMS)
-        , loopBankPath(processorParams, IDs::loopBankPath, nullptr, "heyo")
+        , loopBankPathParam(processorParams, IDs::loopBankPathParam, nullptr, "heyo")
     {
         if (auto inputStream = createAssetInputStream ("cello.wav"))
         {
@@ -2379,7 +2384,7 @@ public:
 
         //myLoops = readLoopDir("loops");
         // loopBank = new LoopBank("/Users/gmt/Loopo/gnappy", 150);
-        loopBank = nullptr;
+        loopBankPath = nullptr;
 
         /* myLoop = readLoop("/Users/gmt/Loopo/loop.wav"); */
         /* myLoopStreamer = new LoopStreamer(myLoop); */
@@ -2389,7 +2394,7 @@ public:
         /* myLoopStreamer3 = new LoopStreamer(myLoop3); */
 
         /* processorParams. */
-        juce::Logger::getCurrentLogger()->writeToLog("AAA " + *loopBankPath);
+        juce::Logger::getCurrentLogger()->writeToLog("AAA " + *loopBankPathParam);
     }
 
     // TODO get rid of this
@@ -2473,8 +2478,9 @@ public:
         process (buffer, midi);
     }
 
-    void setLoopBank (std::shared_ptr<LoopBank> lb)
+    void setLoopBankPath (String loopBankPath)
     {
+      std::shared_ptr<LoopBank> lb(new LoopBank(loopBankPath, 150));
       /* juce::Logger::getCurrentLogger()->writeToLog("SAP load bank2 " + std::to_string(lb->size())); */
 
       class SetLoopBankCommand
@@ -2486,6 +2492,7 @@ public:
 
           void operator() (SamplerAudioProcessor& proc)
           {
+            // TODO delete old?
             proc.loopBank = loopBank.get();
           }
 
@@ -2765,9 +2772,9 @@ private:
                                              dataModel.getAudioFormatManager());
         }
 
-        void loopBankChanged (std::shared_ptr<LoopBank> value) override
+        void loopBankPathChanged (String value) override
         {
-          samplerAudioProcessor.setLoopBank (value);
+          samplerAudioProcessor.setLoopBankPath (value);
         }
 
         void centreFrequencyHzChanged (double value) override
@@ -2932,7 +2939,7 @@ private:
     {
         std::unique_ptr<juce::XmlElement> xml (processorParams.createXml());
         copyXmlToBinary (*xml, destData);
-        juce::Logger::getCurrentLogger()->writeToLog("saving " + *loopBankPath);
+        juce::Logger::getCurrentLogger()->writeToLog("saving " + *loopBankPathParam);
     }
 
     void setStateInformation (const void* data, int sizeInBytes) override
@@ -2945,9 +2952,10 @@ private:
                 /* parameters.replaceState (juce::ValueTree::fromXml (*xmlState)); */
             }
         }
-        juce::Logger::getCurrentLogger()->writeToLog("loading " + *loopBankPath);
+        juce::Logger::getCurrentLogger()->writeToLog("loading " + *loopBankPathParam);
     }
 
+    String *loopBankPath;
     LoopBank *loopBank;
 
 /*     juce::AudioBuffer<float> *myLoop; */
@@ -2976,7 +2984,7 @@ private:
     std::array<std::atomic<float>, maxVoices> playbackPositions;
 
     ValueTree processorParams;
-    CachedValue<String> loopBankPath;
+    CachedValue<String> loopBankPathParam;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
 };
