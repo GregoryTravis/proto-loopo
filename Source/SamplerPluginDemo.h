@@ -249,6 +249,7 @@ DECLARE_ID (sampleReader)
 DECLARE_ID (loopBank)
 DECLARE_ID (centreFrequencyHz)
 DECLARE_ID (loopMode)
+// DECLARE_ID (loopBankPathLabel)
 DECLARE_ID (loopPointsSeconds)
 
 DECLARE_ID (MPE_SETTINGS)
@@ -2238,6 +2239,7 @@ public:
 
         addAndMakeVisible (centreFrequencyLabel);
         addAndMakeVisible (loopKindLabel);
+        addAndMakeVisible (loopBankPathLabel);
 
         changeListenerCallback (&undoManager);
         undoManager.addChangeListener (this);
@@ -2276,6 +2278,7 @@ private:
         loopKindNone    .setBounds (bottomBar.removeFromLeft (80) .reduced (padding));
         loopKindForward .setBounds (bottomBar.removeFromLeft (80) .reduced (padding));
         loopKindPingpong.setBounds (bottomBar.removeFromLeft (80) .reduced (padding));
+        loopBankPathLabel.setBounds (bottomBar.removeFromLeft (100).reduced (padding));
 
         waveformEditor.setBounds (bounds);
     }
@@ -2318,6 +2321,7 @@ private:
 
     Label centreFrequencyLabel     { {}, "Sample Centre Freq / Hz" },
           loopKindLabel            { {}, "Looping Mode" };
+    Label loopBankPathLabel        { {}, "Loop Bank:" };
 
 
     FileChooser fileChooser { "Select a file to load...", File(),
