@@ -188,7 +188,7 @@ public:
       return;
     }
     (*ons)[index] = m.isNoteOn();
-    juce::Logger::getCurrentLogger()->writeToLog("flip " + std::to_string(index) + " " + std::to_string((*ons)[index]));
+    /* juce::Logger::getCurrentLogger()->writeToLog("flip " + std::to_string(index) + " " + std::to_string((*ons)[index])); */
   }
 
   ~LoopBank() {
@@ -2358,7 +2358,7 @@ public:
         , loopBankPath(nullptr)
         , loopBank(nullptr)
         , processorParams(IDs::PLUGIN_PARAMS)
-        , loopBankPathParam(processorParams, IDs::loopBankPathParam, nullptr, "heyo")
+        , loopBankPathParam(processorParams, IDs::loopBankPathParam, nullptr, "")
     {
         if (auto inputStream = createAssetInputStream ("cello.wav"))
         {
@@ -2775,6 +2775,7 @@ private:
         void loopBankPathChanged (String value) override
         {
           samplerAudioProcessor.setLoopBankPath (value);
+          samplerAudioProcessor.setLoopBankPathParam(value);
         }
 
         void centreFrequencyHzChanged (double value) override
@@ -2857,6 +2858,10 @@ private:
 
     bool supportsDoublePrecisionProcessing() const override {
       return false;
+    }
+
+    void setLoopBankPathParam(String value) {
+      loopBankPathParam.setValue(value, nullptr);
     }
 
     // TODO Make static or function
@@ -2952,7 +2957,17 @@ private:
                 /* parameters.replaceState (juce::ValueTree::fromXml (*xmlState)); */
             }
         }
+
         juce::Logger::getCurrentLogger()->writeToLog("loading " + *loopBankPathParam);
+
+        loadLoopBankFromParamMaybe();
+    }
+
+    void loadLoopBankFromParamMaybe() {
+      if (*loopBankPathParam != "") {
+        juce::Logger::getCurrentLogger()->writeToLog("pre-loading bank " + *loopBankPathParam);
+        setLoopBankPath (*loopBankPathParam);
+      }
     }
 
     String *loopBankPath;
