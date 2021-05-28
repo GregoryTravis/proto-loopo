@@ -101,7 +101,7 @@ std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
     ScopedTimeMeasurement m(elapsed);
 
     for (DirectoryEntry entry : RangedDirectoryIterator (File(dirname), false)) {
-      //juce::Logger::getCurrentLogger()->writeToLog("midi " + entry.getFile());
+      juce::Logger::getCurrentLogger()->writeToLog("reading " + entry.getFile().getFullPathName());
       abs->push_back(readLoop(entry.getFile()));
     }
   }
@@ -2368,7 +2368,7 @@ public:
             synthesiser.addVoice (new MPESamplerVoice (sound));
 
         //myLoops = readLoopDir("loops");
-        loopBank = new LoopBank("/Users/gmt/Loopo/gnappy-raw", 150);
+        loopBank = new LoopBank("/Users/gmt/Loopo/gnappy", 150);
 
         /* myLoop = readLoop("/Users/gmt/Loopo/loop.wav"); */
         /* myLoopStreamer = new LoopStreamer(myLoop); */
