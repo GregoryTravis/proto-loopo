@@ -101,11 +101,11 @@ std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
     ScopedTimeMeasurement m(elapsed);
 
     for (DirectoryEntry entry : RangedDirectoryIterator (File(dirname), false)) {
-      juce::Logger::getCurrentLogger()->writeToLog("reading " + entry.getFile().getFullPathName());
+      /* juce::Logger::getCurrentLogger()->writeToLog("reading " + entry.getFile().getFullPathName()); */
       abs->push_back(readLoop(entry.getFile()));
     }
   }
-  juce::Logger::getCurrentLogger()->writeToLog("readLoopDir " + String(elapsed) + "s");
+  /* juce::Logger::getCurrentLogger()->writeToLog("readLoopDir " + String(elapsed) + "s"); */
 
   return abs;
 }
@@ -166,7 +166,7 @@ public:
         resampledAbs->push_back(resampledAb);
       }
     }
-    juce::Logger::getCurrentLogger()->writeToLog("resample " + String(elapsed) + "s");
+    /* juce::Logger::getCurrentLogger()->writeToLog("resample " + String(elapsed) + "s"); */
 
     for (AudioBuffer<float> *ab : *resampledAbs) {
       streamers->push_back(new LoopStreamer(ab));
@@ -263,6 +263,9 @@ DECLARE_ID (legacyPitchbendRange)
 DECLARE_ID (VISIBLE_RANGE)
 DECLARE_ID (totalRange)
 DECLARE_ID (visibleRange)
+
+DECLARE_ID (PLUGIN_PARAMS)
+DECLARE_ID (loopBankPath)
 
 #undef DECLARE_ID
 
@@ -2344,6 +2347,8 @@ class SamplerAudioProcessor  : public AudioProcessor
 public:
     SamplerAudioProcessor()
         : AudioProcessor (BusesProperties().withOutput ("Output", AudioChannelSet::stereo(), true))
+        , processorParams(IDs::PLUGIN_PARAMS)
+        , loopBankPath(processorParams, IDs::loopBankPath, nullptr, "heyo")
     {
         if (auto inputStream = createAssetInputStream ("cello.wav"))
         {
@@ -2369,7 +2374,7 @@ public:
 
         //myLoops = readLoopDir("loops");
         // loopBank = new LoopBank("/Users/gmt/Loopo/gnappy", 150);
-        loopBank = NULL;
+        loopBank = nullptr;
 
         /* myLoop = readLoop("/Users/gmt/Loopo/loop.wav"); */
         /* myLoopStreamer = new LoopStreamer(myLoop); */
@@ -2377,6 +2382,9 @@ public:
         /* myLoopStreamer2 = new LoopStreamer(myLoop2); */
         /* myLoop3 = resample(*myLoop2,  myLoop->getNumSamples()); */
         /* myLoopStreamer3 = new LoopStreamer(myLoop3); */
+
+        /* processorParams. */
+        juce::Logger::getCurrentLogger()->writeToLog("AAA " + *loopBankPath);
     }
 
     // TODO get rid of this
@@ -2445,8 +2453,8 @@ public:
     void changeProgramName (int, const String&) override                  {}
 
     //==============================================================================
-    void getStateInformation (MemoryBlock&) override                      {}
-    void setStateInformation (const void*, int) override                  {}
+    /* void getStateInformation (MemoryBlock&) override                      {} */
+    /* void setStateInformation (const void*, int) override                  {} */
 
     //==============================================================================
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi) override
@@ -2462,7 +2470,7 @@ public:
 
     void setLoopBank (std::shared_ptr<LoopBank> lb)
     {
-      juce::Logger::getCurrentLogger()->writeToLog("SAP load bank2 " + std::to_string(lb->size()));
+      /* juce::Logger::getCurrentLogger()->writeToLog("SAP load bank2 " + std::to_string(lb->size())); */
 
       class SetLoopBankCommand
       {
@@ -2847,7 +2855,7 @@ private:
         // If the timeline is playing, sync with it. Otherwise, just continue
         // playing sequentially by not calling setTime() at all.
         if (cpi.isPlaying) {
-          if (loopBank != NULL) {
+          if (loopBank != nullptr) {
               loopBank->setTime(cpi.timeInSamples);
           }
         }
@@ -2863,7 +2871,7 @@ private:
         jassert(getMainBusNumOutputChannels() == 2);
 
         synchronizeWithPlayHead();
-        if (loopBank != NULL) {
+        if (loopBank != nullptr) {
           loopBank->stream(buffer);
         }
 
@@ -2871,7 +2879,7 @@ private:
         juce::MidiMessage m;
      
         for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);) {
-          juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());
+          // juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());
           if (loopBank != NULL) {
             loopBank->update(m);
           }
@@ -2915,6 +2923,26 @@ private:
 
     }
 
+    void getStateInformation (juce::MemoryBlock& destData) override
+    {
+        std::unique_ptr<juce::XmlElement> xml (processorParams.createXml());
+        copyXmlToBinary (*xml, destData);
+        juce::Logger::getCurrentLogger()->writeToLog("saving " + *loopBankPath);
+    }
+
+    void setStateInformation (const void* data, int sizeInBytes) override
+    {
+        std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+ 
+        if (xmlState.get() != nullptr) {
+            if (xmlState->hasTagName (processorParams.getType())) {
+                processorParams.copyPropertiesAndChildrenFrom(juce::ValueTree::fromXml (*xmlState), nullptr);
+                /* parameters.replaceState (juce::ValueTree::fromXml (*xmlState)); */
+            }
+        }
+        juce::Logger::getCurrentLogger()->writeToLog("loading " + *loopBankPath);
+    }
+
     LoopBank *loopBank;
 
 /*     juce::AudioBuffer<float> *myLoop; */
@@ -2941,6 +2969,9 @@ private:
 
     // This is used for visualising the current playback position of each voice.
     std::array<std::atomic<float>, maxVoices> playbackPositions;
+
+    ValueTree processorParams;
+    CachedValue<String> loopBankPath;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
 };
