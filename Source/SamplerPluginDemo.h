@@ -2169,6 +2169,7 @@ public:
               auto loopBank = new LoopBank(result.getFullPathName(), 150);
               // TODO: delete the old one?
               dataModel.setLoopBank(std::unique_ptr<LoopBank>(loopBank), &undoManager);
+              loopBankPathLabel.setText("Loop Bank: " + result.getFileName(), NotificationType::dontSendNotification);
 
               /*
                 undoManager.beginNewTransaction();
