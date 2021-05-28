@@ -2368,7 +2368,8 @@ public:
             synthesiser.addVoice (new MPESamplerVoice (sound));
 
         //myLoops = readLoopDir("loops");
-        loopBank = new LoopBank("/Users/gmt/Loopo/gnappy", 150);
+        // loopBank = new LoopBank("/Users/gmt/Loopo/gnappy", 150);
+        loopBank = NULL;
 
         /* myLoop = readLoop("/Users/gmt/Loopo/loop.wav"); */
         /* myLoopStreamer = new LoopStreamer(myLoop); */
@@ -2846,7 +2847,9 @@ private:
         // If the timeline is playing, sync with it. Otherwise, just continue
         // playing sequentially by not calling setTime() at all.
         if (cpi.isPlaying) {
-          loopBank->setTime(cpi.timeInSamples);
+          if (loopBank != NULL) {
+              loopBank->setTime(cpi.timeInSamples);
+          }
         }
       }
     }
@@ -2860,14 +2863,18 @@ private:
         jassert(getMainBusNumOutputChannels() == 2);
 
         synchronizeWithPlayHead();
-        loopBank->stream(buffer);
+        if (loopBank != NULL) {
+          loopBank->stream(buffer);
+        }
 
         int time;
         juce::MidiMessage m;
      
         for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);) {
           juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());
-          loopBank->update(m);
+          if (loopBank != NULL) {
+            loopBank->update(m);
+          }
         }
         midiMessages.clear();
     }
