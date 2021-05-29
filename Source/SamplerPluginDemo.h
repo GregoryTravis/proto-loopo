@@ -57,10 +57,19 @@
 #include <vector>
 #include <tuple>
 #include <iomanip>
+#include <functional>
 #include <sstream>
 #include <functional>
 #include <mutex>
 
+void listen(std::function<void(int)> foo)
+{
+  foo(3);
+}
+
+void shew(const String& msg) {
+  juce::Logger::getCurrentLogger()->writeToLog(msg);
+}
 
 // TODO should be a function
 AudioBuffer<float> *readLoop(const String &filename) {
@@ -2136,9 +2145,11 @@ class MainSamplerView  : public Component,
 public:
     MainSamplerView (const DataModel& model,
                      PlaybackPositionOverlay::Provider provider,
+                     ValueTree& pp,
                      UndoManager& um)
         : dataModel (model),
           waveformEditor (dataModel, move (provider), um),
+          processorParams(pp),
           undoManager (um)
     {
         dataModel.addListener (*this);
@@ -2340,6 +2351,7 @@ private:
     FileChooser fileChooser { "Select a file to load...", File(),
                               dataModel.getAudioFormatManager().getWildcardForAllFormats() };
 
+    ValueTree& processorParams;
     UndoManager& undoManager;
 };
 
@@ -2404,6 +2416,7 @@ public:
 
         /* processorParams. */
         juce::Logger::getCurrentLogger()->writeToLog("AAA " + *loopBankPathParam);
+        listen([] (int i) { shew("hi" + std::to_string(i)); });
     }
 
     // TODO get rid of this
@@ -2452,7 +2465,7 @@ public:
         state.centreFrequencyHz = sound->getCentreFrequencyInHz();
         state.loopMode          = sound->getLoopMode();
 
-        return new SamplerAudioProcessorEditor (*this, std::move (state));
+        return new SamplerAudioProcessorEditor (*this, std::move (state), processorParams);
     }
 
     bool hasEditor() const override                                       { return true; }
@@ -2685,7 +2698,7 @@ private:
                                          private MPESettingsDataModel::Listener
     {
     public:
-        SamplerAudioProcessorEditor (SamplerAudioProcessor& p, ProcessorState state)
+        SamplerAudioProcessorEditor (SamplerAudioProcessor& p, ProcessorState state, ValueTree& processorParams)
             : AudioProcessorEditor (&p),
               samplerAudioProcessor (p),
               mainSamplerView (dataModel,
@@ -2700,6 +2713,7 @@ private:
 
                                    return ret;
                                },
+                               processorParams,
                                undoManager)
         {
             dataModel.addListener (*this);
@@ -2971,7 +2985,7 @@ private:
 
         juce::Logger::getCurrentLogger()->writeToLog("loading " + *loopBankPathParam);
 
-        loadLoopBankFromParamMaybe();
+        /* loadLoopBankFromParamMaybe(); */
     }
 
     void loadLoopBankFromParamMaybe() {
