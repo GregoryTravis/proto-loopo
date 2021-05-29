@@ -2734,6 +2734,8 @@ private:
             setResizable (true, true);
             setResizeLimits (640, 480, 2560, 1440);
             setSize (640, 480);
+
+            juce::Logger::getCurrentLogger()->writeToLog("SamplerAudioProcessorEditor()");
         }
 
     private:
