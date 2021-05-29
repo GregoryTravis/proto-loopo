@@ -76,6 +76,12 @@ AudioBuffer<float> *readLoop(const String &filename) {
 
   // TODO Nothing deallocates this; 'delete' is not used once here
   AudioFormatReader *afr = manager.createReaderFor(file);
+
+  if (afr == nullptr) {
+    juce::Logger::getCurrentLogger()->writeToLog("Skipping " + filename);
+    return nullptr;
+  }
+
   /* juce::Logger::getCurrentLogger()->writeToLog( */
   /*     "Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples)); */
 
@@ -102,7 +108,10 @@ std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
 
     for (DirectoryEntry entry : RangedDirectoryIterator (File(dirname), false)) {
       /* juce::Logger::getCurrentLogger()->writeToLog("reading " + entry.getFile().getFullPathName()); */
-      abs->push_back(readLoop(entry.getFile()));
+      auto loop = readLoop(entry.getFile());
+      if (loop != nullptr) {
+        abs->push_back(loop);
+      }
     }
   }
   /* juce::Logger::getCurrentLogger()->writeToLog("readLoopDir " + String(elapsed) + "s"); */
