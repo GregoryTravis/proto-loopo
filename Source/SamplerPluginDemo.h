@@ -2262,9 +2262,12 @@ public:
             }
         };
         loopBankPathListener = lambdaListener([this](const String& loopBankPath) {
-          loopBankPathLabel.setText("Loop Bank: " + loopBankPath, NotificationType::dontSendNotification);
+          setLoopBankPath(loopBankPath);
         });
         ppp.listenLoopBankPath(loopBankPathListener);
+        if (ppp.getLoopBankPath() != "") {
+          setLoopBankPath(ppp.getLoopBankPath());
+        }
 
         loadNewBankButton.onClick = [this, setBankReader]
         {
@@ -2339,6 +2342,14 @@ public:
     }
 
 private:
+    void setLoopBankPath(const String& loopBankPath) {
+      File file(loopBankPath);
+      auto baseName = file.getFileName();
+      juce::Logger::getCurrentLogger()->writeToLog("LIS setText " + loopBankPath);
+      juce::Logger::getCurrentLogger()->writeToLog("LIS setText " + baseName);
+      loopBankPathLabel.setText("Loop Bank: " + baseName, NotificationType::dontSendNotification);
+    }
+
     void changeListenerCallback (ChangeBroadcaster* source) override
     {
         if (source == &undoManager)
@@ -2480,7 +2491,7 @@ public:
 
         /* processorParams. */
         loopBankPathListener = lambdaListener([this] (const String& path) {
-          juce::Logger::getCurrentLogger()->writeToLog("LIS " + path);
+          juce::Logger::getCurrentLogger()->writeToLog("LIS proc setLoopBankPath " + path);
           setLoopBankPath(path);
         });
         ppp.listenLoopBankPath(loopBankPathListener);
