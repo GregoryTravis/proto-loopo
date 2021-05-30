@@ -264,7 +264,7 @@ namespace IDs
 
 DECLARE_ID (DATA_MODEL)
 DECLARE_ID (sampleReader)
-DECLARE_ID (loopBankPath)
+/* DECLARE_ID (loopBankPath) */
 DECLARE_ID (centreFrequencyHz)
 DECLARE_ID (loopMode)
 // DECLARE_ID (loopBankPathLabel)
@@ -1167,7 +1167,7 @@ public:
     public:
         virtual ~Listener() noexcept = default;
         virtual void sampleReaderChanged (std::shared_ptr<AudioFormatReaderFactory>) {}
-        virtual void loopBankPathChanged (String) {}
+        /* virtual void loopBankPathChanged (String) {} */
         virtual void centreFrequencyHzChanged (double) {}
         virtual void loopModeChanged (LoopMode) {}
         virtual void loopPointsSecondsChanged (Range<double>) {}
@@ -1181,7 +1181,7 @@ public:
         : audioFormatManager (&audioFormatManagerIn),
           valueTree (vt),
           sampleReader      (valueTree, IDs::sampleReader,      nullptr),
-          loopBankPath      (valueTree, IDs::loopBankPath,          nullptr),
+          /* loopBankPath      (valueTree, IDs::loopBankPath,          nullptr), */
           centreFrequencyHz (valueTree, IDs::centreFrequencyHz, nullptr),
           loopMode          (valueTree, IDs::loopMode,          nullptr, LoopMode::none),
           loopPointsSeconds (valueTree, IDs::loopPointsSeconds, nullptr)
@@ -1219,12 +1219,12 @@ public:
     /*   return loopBankPath != nullptr ? loopBankPath.get() : nullptr; */
     /* } */
 
-    void setLoopBankPath (String value,
-                      UndoManager* undoManager)
-    {
-      // TODO remove move()?
-      loopBankPath.setValue (value, undoManager);
-    }
+    /* void setLoopBankPath (String value, */
+    /*                   UndoManager* undoManager) */
+    /* { */
+    /*   // TODO remove move()? */
+    /*   loopBankPath.setValue (value, undoManager); */
+    /* } */
 
     double getSampleLengthSeconds() const
     {
@@ -1300,12 +1300,12 @@ private:
             sampleReader.forceUpdateOfCachedValue();
             listenerList.call ([this] (Listener& l) { l.sampleReaderChanged (sampleReader); });
         }
-        else if (property == IDs::loopBankPath)
-        {
-            loopBankPath.forceUpdateOfCachedValue();
-            //juce::Logger::getCurrentLogger()->writeToLog("VT lb changed");
-            listenerList.call ([this] (Listener& l) { l.loopBankPathChanged (loopBankPath); });
-        }
+        /* else if (property == IDs::loopBankPath) */
+        /* { */
+        /*     loopBankPath.forceUpdateOfCachedValue(); */
+        /*     //juce::Logger::getCurrentLogger()->writeToLog("VT lb changed"); */
+        /*     listenerList.call ([this] (Listener& l) { l.loopBankPathChanged (loopBankPath); }); */
+        /* } */
         else if (property == IDs::centreFrequencyHz)
         {
             centreFrequencyHz.forceUpdateOfCachedValue();
@@ -1333,7 +1333,7 @@ private:
     ValueTree valueTree;
 
     CachedValue<std::shared_ptr<AudioFormatReaderFactory>> sampleReader;
-    CachedValue<String> loopBankPath;
+    /* CachedValue<String> loopBankPath; */
     CachedValue<double> centreFrequencyHz;
     CachedValue<LoopMode> loopMode;
     CachedValue<Range<double>> loopPointsSeconds;
@@ -2139,6 +2139,62 @@ private:
     Ruler ruler;
 };
 
+Value::Listener *lambdaListener(std::function<void(const String&)> ll) {
+  class Lis : public Value::Listener
+  {
+  public:
+    Lis(std::function<void(const String&)> &lll)
+    : ll(lll)
+    {
+    }
+
+    void valueChanged(Value &rvalue) override {
+      String p = rvalue.getValue();
+      juce::Logger::getCurrentLogger()->writeToLog("lambdaListener passing " + p);
+      ll(p);
+    }
+  private:
+    std::function<void(const String&)> ll;
+  };
+  return new Lis(ll);
+}
+
+class ProcessorParams
+{
+public:
+  ProcessorParams()
+  : valueTree(IDs::PLUGIN_PARAMS2)
+  , loopBankPath(valueTree.getPropertyAsValue(IDs::loopBankPathParam, nullptr, ""))
+  {
+  }
+
+  void listenLoopBankPath(Value::Listener *lis) {
+    loopBankPath.addListener(lis);
+  }
+
+  void unlistenLoopBankPath(Value::Listener *lis) {
+    loopBankPath.removeListener(lis);
+  }
+
+  void setLoopBankPath(const String& path) {
+    loopBankPath = path;
+  }
+
+  const String getLoopBankPath()
+  {
+    return loopBankPath.getValue();
+  }
+
+  ValueTree& getValueTree()
+  {
+    return valueTree;
+  }
+
+private:
+  ValueTree valueTree;
+  Value loopBankPath;
+};
+
 //==============================================================================
 class MainSamplerView  : public Component,
                          private DataModel::Listener,
@@ -2147,12 +2203,13 @@ class MainSamplerView  : public Component,
 public:
     MainSamplerView (const DataModel& model,
                      PlaybackPositionOverlay::Provider provider,
-                     ValueTree& pp,
+                     ProcessorParams& pp,
                      UndoManager& um)
         : dataModel (model),
           waveformEditor (dataModel, move (provider), um),
-          processorParams(pp),
-          undoManager (um)
+          ppp(pp),
+          undoManager (um),
+          loopBankPathListener(nullptr)
     {
         dataModel.addListener (*this);
 
@@ -2193,8 +2250,8 @@ public:
               /* auto loopBank = new LoopBank(result.getFullPathName(), 150); */
               // TODO: delete the old one?
               /* dataModel.setLoopBankPath(std::unique_ptr<LoopBank>(loopBank), &undoManager); */
-              dataModel.setLoopBankPath(result.getFullPathName(), &undoManager);
-              loopBankPathLabel.setText("Loop Bank: " + result.getFileName(), NotificationType::dontSendNotification);
+              ppp.setLoopBankPath(result.getFullPathName());
+              /* loopBankPathLabel.setText("Loop Bank: " + result.getFileName(), NotificationType::dontSendNotification); */
 
               /*
                 undoManager.beginNewTransaction();
@@ -2204,6 +2261,10 @@ public:
                */
             }
         };
+        loopBankPathListener = lambdaListener([this](const String& loopBankPath) {
+          loopBankPathLabel.setText("Loop Bank: " + loopBankPath, NotificationType::dontSendNotification);
+        });
+        ppp.listenLoopBankPath(loopBankPathListener);
 
         loadNewBankButton.onClick = [this, setBankReader]
         {
@@ -2273,6 +2334,7 @@ public:
 
     ~MainSamplerView() override
     {
+        ppp.unlistenLoopBankPath(loopBankPathListener);
         undoManager.removeChangeListener (this);
     }
 
@@ -2353,7 +2415,8 @@ private:
     FileChooser fileChooser { "Select a file to load...", File(),
                               dataModel.getAudioFormatManager().getWildcardForAllFormats() };
 
-    ValueTree& processorParams;
+    ProcessorParams& ppp;
+    Value::Listener *loopBankPathListener;
     UndoManager& undoManager;
 };
 
@@ -2372,53 +2435,15 @@ struct ProcessorState
     LoopMode loopMode;
 };
 
-class ProcessorParams
-{
-public:
-  ProcessorParams()
-  : valueTree(IDs::PLUGIN_PARAMS2)
-  , loopBankPath(valueTree.getPropertyAsValue(IDs::loopBankPathParam, nullptr, ""))
-  {
-  }
-
-  void listenLoopBankPath(std::function<void(const String&)> ll) {
-    class Lis : public Value::Listener
-    {
-    public:
-      Lis(std::function<void(const String&)> &lll)
-      : ll(lll)
-      {
-      }
-
-      void valueChanged(Value &rvalue) override {
-        String p = rvalue.getValue();
-        ll(p);
-      }
-    private:
-      std::function<void(const String&)> ll;
-    };
-    loopBankPath.addListener(new Lis(ll));
-  }
-
-  void setLoopBankPath(const String& path) {
-    loopBankPath = path;
-  }
-
-private:
-  ValueTree valueTree;
-  Value loopBankPath;
-};
-
 //==============================================================================
 class SamplerAudioProcessor  : public AudioProcessor
 {
 public:
     SamplerAudioProcessor()
         : AudioProcessor (BusesProperties().withOutput ("Output", AudioChannelSet::stereo(), true))
-        , loopBankPath(nullptr)
+        /* , loopBankPath(nullptr) */
         , loopBank(nullptr)
-        , processorParams(IDs::PLUGIN_PARAMS)
-        , loopBankPathParam(processorParams, IDs::loopBankPathParam, nullptr, "")
+        , loopBankPathListener(nullptr)
     {
         if (auto inputStream = createAssetInputStream ("cello.wav"))
         {
@@ -2444,7 +2469,7 @@ public:
 
         //myLoops = readLoopDir("loops");
         // loopBank = new LoopBank("/Users/gmt/Loopo/gnappy", 150);
-        loopBankPath = nullptr;
+        /* loopBankPath = nullptr; */
 
         /* myLoop = readLoop("/Users/gmt/Loopo/loop.wav"); */
         /* myLoopStreamer = new LoopStreamer(myLoop); */
@@ -2454,17 +2479,16 @@ public:
         /* myLoopStreamer3 = new LoopStreamer(myLoop3); */
 
         /* processorParams. */
-        juce::Logger::getCurrentLogger()->writeToLog("AAA " + *loopBankPathParam);
-        /* listen([] (int i) { shew("hi" + std::to_string(i)); }); */
-
-        ppp.listenLoopBankPath([] (const String& path) {
+        loopBankPathListener = lambdaListener([this] (const String& path) {
           juce::Logger::getCurrentLogger()->writeToLog("LIS " + path);
+          setLoopBankPath(path);
         });
-        ppp.setLoopBankPath("asdfasdf");
+        ppp.listenLoopBankPath(loopBankPathListener);
     }
 
     // TODO get rid of this
     ~SamplerAudioProcessor() {
+      ppp.unlistenLoopBankPath(loopBankPathListener);
       //delete loopBank;
       /* delete myLoopStreamer; */
       /* delete myLoop; */
@@ -2509,7 +2533,7 @@ public:
         state.centreFrequencyHz = sound->getCentreFrequencyInHz();
         state.loopMode          = sound->getLoopMode();
 
-        return new SamplerAudioProcessorEditor (*this, std::move (state), processorParams);
+        return new SamplerAudioProcessorEditor (*this, std::move (state), ppp);
     }
 
     bool hasEditor() const override                                       { return true; }
@@ -2544,7 +2568,7 @@ public:
         process (buffer, midi);
     }
 
-    void setLoopBankPath (String loopBankPath)
+    void setLoopBankPath (const String& loopBankPath)
     {
       std::shared_ptr<LoopBank> lb(new LoopBank(loopBankPath, 150));
       /* juce::Logger::getCurrentLogger()->writeToLog("SAP load bank2 " + std::to_string(lb->size())); */
@@ -2742,7 +2766,7 @@ private:
                                          private MPESettingsDataModel::Listener
     {
     public:
-        SamplerAudioProcessorEditor (SamplerAudioProcessor& p, ProcessorState state, ValueTree& processorParams)
+        SamplerAudioProcessorEditor (SamplerAudioProcessor& p, ProcessorState state, ProcessorParams &ppp)
             : AudioProcessorEditor (&p),
               samplerAudioProcessor (p),
               mainSamplerView (dataModel,
@@ -2757,7 +2781,7 @@ private:
 
                                    return ret;
                                },
-                               processorParams,
+                               ppp,
                                undoManager)
         {
             dataModel.addListener (*this);
@@ -2841,11 +2865,11 @@ private:
                                              dataModel.getAudioFormatManager());
         }
 
-        void loopBankPathChanged (String value) override
-        {
-          samplerAudioProcessor.setLoopBankPath (value);
-          samplerAudioProcessor.setLoopBankPathParam(value);
-        }
+        /* void loopBankPathChanged (String value) override */
+        /* { */
+        /*   samplerAudioProcessor.setLoopBankPath (value); */
+        /*   samplerAudioProcessor.setLoopBankPathParam(value); */
+        /* } */
 
         void centreFrequencyHzChanged (double value) override
         {
@@ -2929,9 +2953,9 @@ private:
       return false;
     }
 
-    void setLoopBankPathParam(String value) {
-      loopBankPathParam.setValue(value, nullptr);
-    }
+    /* void setLoopBankPathParam(String value) { */
+    /*   loopBankPathParam.setValue(value, nullptr); */
+    /* } */
 
     // TODO Make static or function
     void synchronizeWithPlayHead() {
@@ -3011,9 +3035,9 @@ private:
 
     void getStateInformation (juce::MemoryBlock& destData) override
     {
-        std::unique_ptr<juce::XmlElement> xml (processorParams.createXml());
+        std::unique_ptr<juce::XmlElement> xml (ppp.getValueTree().createXml());
         copyXmlToBinary (*xml, destData);
-        juce::Logger::getCurrentLogger()->writeToLog("saving " + *loopBankPathParam);
+        juce::Logger::getCurrentLogger()->writeToLog("saving " + ppp.getLoopBankPath());
     }
 
     void setStateInformation (const void* data, int sizeInBytes) override
@@ -3021,25 +3045,37 @@ private:
         std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
  
         if (xmlState.get() != nullptr) {
-            if (xmlState->hasTagName (processorParams.getType())) {
-                processorParams.copyPropertiesAndChildrenFrom(juce::ValueTree::fromXml (*xmlState), nullptr);
+            if (xmlState->hasTagName (ppp.getValueTree().getType())) {
+
+                // I worried this was overwriting the listeners since they
+                // didn't print anything in the dev host, but it seems to work.
+                // The 3-line bit below was my attempt to avoid this thing
+                // (that wasn't happening anyway) by just writing the one
+                // string directly.
+                ppp.getValueTree().copyPropertiesAndChildrenFrom(juce::ValueTree::fromXml
+                    (*xmlState), nullptr);
+
+                /* ValueTree nuvt = juce::ValueTree::fromXml (*xmlState); */
+                /* CachedValue<String> lbp(nuvt, IDs::loopBankPathParam, nullptr); */
+                /* ppp.setLoopBankPath(*lbp); */
+
                 /* parameters.replaceState (juce::ValueTree::fromXml (*xmlState)); */
             }
         }
 
-        juce::Logger::getCurrentLogger()->writeToLog("loading " + *loopBankPathParam);
+        juce::Logger::getCurrentLogger()->writeToLog("loading " + ppp.getLoopBankPath());
 
         /* loadLoopBankFromParamMaybe(); */
     }
 
     void loadLoopBankFromParamMaybe() {
-      if (*loopBankPathParam != "") {
-        juce::Logger::getCurrentLogger()->writeToLog("pre-loading bank " + *loopBankPathParam);
-        setLoopBankPath (*loopBankPathParam);
+      if (ppp.getLoopBankPath() != "") {
+        juce::Logger::getCurrentLogger()->writeToLog("pre-loading bank " + ppp.getLoopBankPath());
+        setLoopBankPath (ppp.getLoopBankPath());
       }
     }
 
-    String *loopBankPath;
+    /* String *loopBankPath; */
     LoopBank *loopBank;
 
 /*     juce::AudioBuffer<float> *myLoop; */
@@ -3067,9 +3103,8 @@ private:
     // This is used for visualising the current playback position of each voice.
     std::array<std::atomic<float>, maxVoices> playbackPositions;
 
-    ValueTree processorParams;
-    CachedValue<String> loopBankPathParam;
     ProcessorParams ppp;
+    Value::Listener *loopBankPathListener;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
 };
