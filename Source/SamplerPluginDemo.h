@@ -62,14 +62,14 @@
 #include <functional>
 #include <mutex>
 
-void listen(std::function<void(int)> foo)
-{
-  foo(3);
-}
+/* void listen(std::function<void(int)> foo) */
+/* { */
+/*   foo(3); */
+/* } */
 
-void shew(const String& msg) {
-  juce::Logger::getCurrentLogger()->writeToLog(msg);
-}
+/* void shew(const String& msg) { */
+/*   juce::Logger::getCurrentLogger()->writeToLog(msg); */
+/* } */
 
 // TODO should be a function
 AudioBuffer<float> *readLoop(const String &filename) {
@@ -285,6 +285,8 @@ DECLARE_ID (visibleRange)
 
 DECLARE_ID (PLUGIN_PARAMS)
 DECLARE_ID (loopBankPathParam)
+
+DECLARE_ID (PLUGIN_PARAMS2)
 
 #undef DECLARE_ID
 
@@ -2370,6 +2372,43 @@ struct ProcessorState
     LoopMode loopMode;
 };
 
+class ProcessorParams
+{
+public:
+  ProcessorParams()
+  : valueTree(IDs::PLUGIN_PARAMS2)
+  , loopBankPath(valueTree.getPropertyAsValue(IDs::loopBankPathParam, nullptr, ""))
+  {
+  }
+
+  void listenLoopBankPath(std::function<void(const String&)> ll) {
+    class Lis : public Value::Listener
+    {
+    public:
+      Lis(std::function<void(const String&)> &lll)
+      : ll(lll)
+      {
+      }
+
+      void valueChanged(Value &rvalue) override {
+        String p = rvalue.getValue();
+        ll(p);
+      }
+    private:
+      std::function<void(const String&)> ll;
+    };
+    loopBankPath.addListener(new Lis(ll));
+  }
+
+  void setLoopBankPath(const String& path) {
+    loopBankPath = path;
+  }
+
+private:
+  ValueTree valueTree;
+  Value loopBankPath;
+};
+
 //==============================================================================
 class SamplerAudioProcessor  : public AudioProcessor
 {
@@ -2416,7 +2455,12 @@ public:
 
         /* processorParams. */
         juce::Logger::getCurrentLogger()->writeToLog("AAA " + *loopBankPathParam);
-        listen([] (int i) { shew("hi" + std::to_string(i)); });
+        /* listen([] (int i) { shew("hi" + std::to_string(i)); }); */
+
+        ppp.listenLoopBankPath([] (const String& path) {
+          juce::Logger::getCurrentLogger()->writeToLog("LIS " + path);
+        });
+        ppp.setLoopBankPath("asdfasdf");
     }
 
     // TODO get rid of this
@@ -3025,6 +3069,7 @@ private:
 
     ValueTree processorParams;
     CachedValue<String> loopBankPathParam;
+    ProcessorParams ppp;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessor)
 };
