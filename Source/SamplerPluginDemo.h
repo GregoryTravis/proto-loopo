@@ -2507,7 +2507,7 @@ public:
         /* processorParams. */
         loopBankPathListener = lambdaListener([this] (const String& path) {
           juce::Logger::getCurrentLogger()->writeToLog("LIS proc setLoopBankPath " + path);
-          setLoopBankPath(path);
+          //setLoopBankPath(path);
         });
         ppp.listenLoopBankPath(loopBankPathListener);
     }
@@ -2594,9 +2594,9 @@ public:
         process (buffer, midi);
     }
 
-    void setLoopBankPath (const String& loopBankPath)
+    void setLoopBank(std::shared_ptr<LoopBank> lb)
     {
-      std::shared_ptr<LoopBank> lb(new LoopBank(loopBankPath, 120));
+      // std::shared_ptr<LoopBank> lb(new LoopBank(loopBankPath, 120));
       /* juce::Logger::getCurrentLogger()->writeToLog("SAP load bank2 " + std::to_string(lb->size())); */
 
       class SetLoopBankCommand
@@ -2885,6 +2885,12 @@ private:
 
         }
 
+        void loopBankChanged(std::shared_ptr<LoopBank> value) override
+        {
+          juce::Logger::getCurrentLogger()->writeToLog("SAPE dm listener got loop bank");
+          samplerAudioProcessor.setLoopBank(value);
+        }
+
         void sampleReaderChanged (std::shared_ptr<AudioFormatReaderFactory> value) override
         {
             samplerAudioProcessor.setSample (value == nullptr ? nullptr : value->clone(),
@@ -3097,7 +3103,7 @@ private:
     void loadLoopBankFromParamMaybe() {
       if (ppp.getLoopBankPath() != "") {
         juce::Logger::getCurrentLogger()->writeToLog("pre-loading bank " + ppp.getLoopBankPath());
-        setLoopBankPath (ppp.getLoopBankPath());
+        //setLoopBankPath (ppp.getLoopBankPath());
       }
     }
 
