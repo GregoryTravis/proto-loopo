@@ -2070,6 +2070,11 @@ private:
         thumbnail.clear();
     }
 
+    void loopBankChanged(std::shared_ptr<LoopBank> value) override
+    {
+      juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank");
+    }
+
     void visibleRangeChanged (Range<double>) override
     {
         repaint();
