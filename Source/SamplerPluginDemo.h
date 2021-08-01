@@ -2581,7 +2581,7 @@ public:
 
     void setLoopBankPath (const String& loopBankPath)
     {
-      std::shared_ptr<LoopBank> lb(new LoopBank(loopBankPath, 150));
+      std::shared_ptr<LoopBank> lb(new LoopBank(loopBankPath, 120));
       /* juce::Logger::getCurrentLogger()->writeToLog("SAP load bank2 " + std::to_string(lb->size())); */
 
       class SetLoopBankCommand
