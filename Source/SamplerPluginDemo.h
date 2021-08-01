@@ -269,6 +269,7 @@ DECLARE_ID (centreFrequencyHz)
 DECLARE_ID (loopMode)
 // DECLARE_ID (loopBankPathLabel)
 DECLARE_ID (loopPointsSeconds)
+DECLARE_ID (loopBank)
 
 DECLARE_ID (MPE_SETTINGS)
 DECLARE_ID (synthVoices)
@@ -1171,6 +1172,7 @@ public:
         virtual void centreFrequencyHzChanged (double) {}
         virtual void loopModeChanged (LoopMode) {}
         virtual void loopPointsSecondsChanged (Range<double>) {}
+        virtual void loopBankChanged (std::shared_ptr<LoopBank>) {}
     };
 
     explicit DataModel (AudioFormatManager& audioFormatManagerIn)
@@ -1184,7 +1186,8 @@ public:
           /* loopBankPath      (valueTree, IDs::loopBankPath,          nullptr), */
           centreFrequencyHz (valueTree, IDs::centreFrequencyHz, nullptr),
           loopMode          (valueTree, IDs::loopMode,          nullptr, LoopMode::none),
-          loopPointsSeconds (valueTree, IDs::loopPointsSeconds, nullptr)
+          loopPointsSeconds (valueTree, IDs::loopPointsSeconds, nullptr),
+          loopBank (valueTree, IDs::loopBank, nullptr)
     {
         jassert (valueTree.hasType (IDs::DATA_MODEL));
         valueTree.addListener (this);
@@ -1212,6 +1215,11 @@ public:
         sampleReader.setValue (move (readerFactory), undoManager);
         setLoopPointsSeconds (Range<double> (0, getSampleLengthSeconds()).constrainRange (loopPointsSeconds),
                               undoManager);
+    }
+
+    void setLoopBank(std::unique_ptr<LoopBank> lb, UndoManager* undoManager)
+    {
+      loopBank.setValue(move(lb), undoManager);
     }
 
     /* String getLoopBankPath() const */
@@ -1321,6 +1329,11 @@ private:
             loopPointsSeconds.forceUpdateOfCachedValue();
             listenerList.call ([this] (Listener& l) { l.loopPointsSecondsChanged (loopPointsSeconds); });
         }
+        else if (property == IDs::loopBank)
+        {
+            loopBank.forceUpdateOfCachedValue();
+            listenerList.call ([this] (Listener& l) { l.loopBankChanged (loopBank); });
+        }
     }
 
     void valueTreeChildAdded        (ValueTree&, ValueTree&)      override {}
@@ -1337,6 +1350,7 @@ private:
     CachedValue<double> centreFrequencyHz;
     CachedValue<LoopMode> loopMode;
     CachedValue<Range<double>> loopPointsSeconds;
+    CachedValue<std::shared_ptr<LoopBank>> loopBank;
 
     ListenerList<Listener> listenerList;
 };
@@ -2251,6 +2265,7 @@ public:
               // TODO: delete the old one?
               /* dataModel.setLoopBankPath(std::unique_ptr<LoopBank>(loopBank), &undoManager); */
               ppp.setLoopBankPath(result.getFullPathName());
+              dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(result.getFullPathName(), 120)), &undoManager);
               /* loopBankPathLabel.setText("Loop Bank: " + result.getFileName(), NotificationType::dontSendNotification); */
 
               /*
