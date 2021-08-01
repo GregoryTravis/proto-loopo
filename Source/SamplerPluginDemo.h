@@ -165,7 +165,9 @@ AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
 // Keeps ownership of the ABs
 class LoopBank {
 public:
-  LoopBank(const String dirName, const int bpm) {
+  LoopBank(const String dn, const int bpm)
+    : dirName(dn)
+  {
     int desiredLength = 44100.0 * 4.0 * (60.0 / ((double)bpm));
     /* juce::Logger::getCurrentLogger()->writeToLog("bpm " + std::to_string(bpm) + " len " + std::to_string(desiredLength)); */
 
@@ -249,8 +251,13 @@ public:
     return streamers->size();
   }
 
+  const String& getDirName() {
+    return dirName;
+  }
+
 private:
   // TODO: Do we need this?
+  const String dirName;
   std::vector<AudioBuffer<float>*> *resampledAbs;
   std::vector<LoopStreamer*> *streamers;
   std::vector<bool> *ons;
@@ -2073,6 +2080,16 @@ private:
     void loopBankChanged(std::shared_ptr<LoopBank> value) override
     {
       juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank");
+      auto &afm = dataModel.getAudioFormatManager();
+      const String &loopBankDir = value.get()->getDirName();
+      loopBankThumbnails.clear();
+      for (DirectoryEntry entry : RangedDirectoryIterator (File(loopBankDir), false)) {
+        auto file = entry.getFile();
+        // AudioFormatReader *afr = manager.createReaderFor(file);
+        loopBankThumbnails.emplace_back(4, afm, thumbnailCache);
+        auto &thumbnail = loopBankThumbnails.back();
+        thumbnail.setSource(new FileInputSource(file));
+      }
     }
 
     void visibleRangeChanged (Range<double>) override
@@ -2099,6 +2116,7 @@ private:
     VisibleRangeDataModel visibleRange;
     AudioThumbnailCache thumbnailCache;
     AudioThumbnail thumbnail;
+    std::vector<AudioThumbnail> loopBankThumbnails;
     int64 currentHashCode = 0;
 };
 
@@ -2227,8 +2245,8 @@ public:
         : dataModel (model),
           waveformEditor (dataModel, move (provider), um),
           ppp(pp),
-          undoManager (um),
-          loopBankPathListener(nullptr)
+          loopBankPathListener(nullptr),
+          undoManager (um)
     {
         dataModel.addListener (*this);
 
