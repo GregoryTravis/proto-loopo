@@ -255,6 +255,11 @@ public:
     return dirName;
   }
 
+  // Returns false if out of range.
+  bool isOn(int index) {
+    return (*ons)[index];
+  }
+
 private:
   // TODO: Do we need this?
   const String dirName;
@@ -2079,7 +2084,8 @@ private:
 
     void loopBankChanged(std::shared_ptr<LoopBank> value) override
     {
-      juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank");
+      loopBank = value.get();
+      /* juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank"); */
       auto &afm = dataModel.getAudioFormatManager();
       const String &loopBankDir = value.get()->getDirName();
       loopBankThumbnails.clear();
@@ -2099,25 +2105,81 @@ private:
 
     void drawChannel (Graphics& g, int channel, Rectangle<int> bounds)
     {
-        g.setGradientFill (ColourGradient (Colours::lightblue,
-                                           bounds.getTopLeft().toFloat(),
-                                           Colours::darkgrey,
-                                           bounds.getBottomLeft().toFloat(),
-                                           false));
-        thumbnail.drawChannel (g,
-                               bounds,
-                               visibleRange.getVisibleRange().getStart(),
-                               visibleRange.getVisibleRange().getEnd(),
-                               channel,
-                               1.0f);
+        /* g.setGradientFill (ColourGradient (Colours::lightblue, */
+        /*                                    bounds.getTopLeft().toFloat(), */
+        /*                                    Colours::darkgrey, */
+        /*                                    bounds.getBottomLeft().toFloat(), */
+        /*                                    false)); */
+        /* thumbnail.drawChannel (g, */
+        /*                        bounds, */
+        /*                        visibleRange.getVisibleRange().getStart(), */
+        /*                        visibleRange.getVisibleRange().getEnd(), */
+        /*                        channel, */
+        /*                        1.0f); */
+
+        /* juce::Logger::getCurrentLogger()->writeToLog("bounds " + bounds.toString()); */
+        auto bounds0 = bounds / 2;
+        /* juce::Logger::getCurrentLogger()->writeToLog("bounds0 " + bounds0.toString()); */
+        auto bounds1 = bounds0.translated(bounds0.getWidth(), bounds0.getHeight());
+        /* juce::Logger::getCurrentLogger()->writeToLog("bounds1 " + bounds1.toString()); */
+        int numWavs = (int) loopBankThumbnails.size();
+        int gridSize = (int)ceil(sqrt((double)numWavs));
+        /* juce::Logger::getCurrentLogger()->writeToLog("num " + std::to_string(numWavs) + " gridSize " + std::to_string(gridSize)); */
+        int subW = bounds.getWidth() / gridSize;
+        int subH = bounds.getHeight() / gridSize;
+        Rectangle<int> firstSubBounds(0, 0, subW, subH);
+
+        int inx = 0;
+        for (std::list<AudioThumbnail>::iterator it=loopBankThumbnails.begin(); it != loopBankThumbnails.end(); ++it) {
+          int col = inx % gridSize;
+          int row = inx / gridSize;
+          Rectangle<int> subBounds = firstSubBounds + Point<int>(col * subW, row * subH);
+          /* juce::Logger::getCurrentLogger()->writeToLog("rend " + std::to_string(col) + " " + std::to_string(row)); */
+          /* juce::Logger::getCurrentLogger()->writeToLog("rend bounds " + subBounds.toString()); */
+          bool isOn = loopBank == nullptr ? false : loopBank->isOn(inx);
+          if (isOn) {
+            g.setColour (Colours::white);
+            g.fillRect(subBounds);
+            g.setGradientFill (ColourGradient (Colours::darkgrey,
+                                               subBounds.getTopLeft().toFloat(),
+                                               Colours::lightgrey,
+                                               subBounds.getBottomLeft().toFloat(),
+                                               false));
+          } else {
+            g.setColour (Colours::black);
+            g.fillRect(subBounds);
+            g.setGradientFill (ColourGradient (Colours::lightblue,
+                                               subBounds.getTopLeft().toFloat(),
+                                               Colours::darkgrey,
+                                               subBounds.getBottomLeft().toFloat(),
+                                               false));
+          }
+          it->drawChannel (g,
+                          subBounds,
+                          visibleRange.getVisibleRange().getStart(),
+                          visibleRange.getVisibleRange().getEnd(),
+                          channel,
+                          1.0f);
+          inx++;
+        }
+        //}
+        /* for (auto &th : loopBankThumbnails) { */
+        /*   th.drawChannel (g, */
+        /*                   bounds, */
+        /*                   visibleRange.getVisibleRange().getStart(), */
+        /*                   visibleRange.getVisibleRange().getEnd(), */
+        /*                   channel, */
+        /*                   1.0f); */
+        /* } */
     }
 
     DataModel dataModel;
     VisibleRangeDataModel visibleRange;
     AudioThumbnailCache thumbnailCache;
     AudioThumbnail thumbnail;
-    std::vector<AudioThumbnail> loopBankThumbnails;
+    std::list<AudioThumbnail> loopBankThumbnails;
     int64 currentHashCode = 0;
+    LoopBank *loopBank = nullptr;
 };
 
 //==============================================================================
