@@ -916,6 +916,10 @@ public:
         return *this;
     }
 
+    ~VisibleRangeDataModel() {
+      valueTree.removeListener(this);
+    }
+
     Range<double> getTotalRange() const
     {
         return totalRange;
@@ -1019,6 +1023,10 @@ public:
     MPESettingsDataModel (const MPESettingsDataModel& other)
         : MPESettingsDataModel (other.valueTree)
     {}
+
+    ~MPESettingsDataModel() {
+      valueTree.removeListener(this);
+    }
 
     MPESettingsDataModel& operator= (const MPESettingsDataModel& other)
     {
@@ -1208,6 +1216,10 @@ public:
     DataModel (const DataModel& other)
         : DataModel (*other.audioFormatManager, other.valueTree)
     {}
+
+    ~DataModel() {
+      valueTree.removeListener(this);
+    }
 
     DataModel& operator= (const DataModel& other)
     {
@@ -1434,6 +1446,10 @@ public:
         };
     }
 
+    ~MPELegacySettingsComponent() {
+      dataModel.removeListener(*this);
+    }
+
     int getMinHeight() const
     {
         return (controlHeight * 3) + (controlSeparation * 2);
@@ -1558,6 +1574,10 @@ public:
         };
     }
 
+    ~MPENewSettingsComponent() {
+      dataModel.removeListener(*this);
+    }
+
     int getMinHeight() const
     {
         return (controlHeight * 6) + (controlSeparation * 6);
@@ -1648,6 +1668,10 @@ public:
             undoManager->beginNewTransaction();
             dataModel.setVoiceStealingEnabled (voiceStealingEnabledToggle.getToggleState(), undoManager);
         };
+    }
+
+    ~MPESettingsComponent() {
+      dataModel.removeListener(*this);
     }
 
 private:
@@ -2208,6 +2232,10 @@ public:
         addAndMakeVisible (ruler);
     }
 
+    ~WaveformEditor() {
+      dataModel.removeListener(*this);
+    }
+
 private:
     void resized() override
     {
@@ -2438,6 +2466,7 @@ public:
     ~MainSamplerView() override
     {
         ppp.unlistenLoopBankPath(loopBankPathListener);
+        dataModel.removeListener(*this);
         undoManager.removeChangeListener (this);
     }
 
@@ -2563,9 +2592,11 @@ public:
         }
 
         // Set up initial sample, which we load from a binary resource
-        AudioFormatManager manager;
-        manager.registerBasicFormats();
-        auto reader = readerFactory->make (manager);
+        /* AudioFormatManager manager; */
+        /* manager.registerBasicFormats(); */
+        /* auto reader = readerFactory->make (manager); */
+        formatManager.registerBasicFormats();
+        auto reader = readerFactory->make (formatManager);
         jassert (reader != nullptr); // Failed to load resource!
 
         auto sound = samplerSound;
@@ -2644,7 +2675,7 @@ public:
         state.centreFrequencyHz = sound->getCentreFrequencyInHz();
         state.loopMode          = sound->getLoopMode();
 
-        return new SamplerAudioProcessorEditor (*this, std::move (state), ppp);
+        return new SamplerAudioProcessorEditor (formatManager, dataModel, *this, std::move (state), ppp);
     }
 
     bool hasEditor() const override                                       { return true; }
@@ -2877,8 +2908,12 @@ private:
                                          private MPESettingsDataModel::Listener
     {
     public:
-        SamplerAudioProcessorEditor (SamplerAudioProcessor& p, ProcessorState state, ProcessorParams &ppp)
-            : AudioProcessorEditor (&p),
+        SamplerAudioProcessorEditor (
+            AudioFormatManager &_fm, DataModel &_dm,
+            SamplerAudioProcessor& p, ProcessorState state, ProcessorParams &ppp)
+            : formatManager(_fm),
+              dataModel(_dm),
+              AudioProcessorEditor (&p),
               samplerAudioProcessor (p),
               mainSamplerView (dataModel,
                                [&p]
@@ -2898,7 +2933,7 @@ private:
             dataModel.addListener (*this);
             mpeSettings.addListener (*this);
 
-            formatManager.registerBasicFormats();
+            /* formatManager.registerBasicFormats(); */
 
             addAndMakeVisible (tabbedComponent);
 
@@ -2929,6 +2964,11 @@ private:
             setSize (640, 480);
 
             juce::Logger::getCurrentLogger()->writeToLog("SamplerAudioProcessorEditor()");
+        }
+
+        ~SamplerAudioProcessorEditor() {
+            dataModel.removeListener(*this);
+            mpeSettings.removeListener(*this);
         }
 
     private:
@@ -3054,8 +3094,10 @@ private:
         }
 
         SamplerAudioProcessor& samplerAudioProcessor;
-        AudioFormatManager formatManager;
-        DataModel dataModel { formatManager };
+        /* AudioFormatManager formatManager; */
+        /* DataModel dataModel { formatManager }; */
+        AudioFormatManager &formatManager;
+        DataModel &dataModel;
         UndoManager undoManager;
         MPESettingsDataModel mpeSettings { dataModel.mpeSettings() };
 
@@ -3205,6 +3247,8 @@ private:
 
     CommandFifo<SamplerAudioProcessor> commands;
 
+    AudioFormatManager formatManager;
+    DataModel dataModel { formatManager };
     MemoryBlock mb;
     std::unique_ptr<AudioFormatReaderFactory> readerFactory;
     std::shared_ptr<MPESamplerSound> samplerSound = std::make_shared<MPESamplerSound>();
