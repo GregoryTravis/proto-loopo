@@ -71,6 +71,13 @@
 /*   juce::Logger::getCurrentLogger()->writeToLog(msg); */
 /* } */
 
+#define LOGFILE "/tmp/loopo.log"
+
+void shew(const String &s) {
+  FileLogger fl(File(LOGFILE), "heyo");
+  fl.logMessage(s);
+}
+
 // TODO should be a function
 AudioBuffer<float> *readLoop(const String &filename) {
   //juce::Logger::getCurrentLogger()->writeToLog("Reading " + filename);
@@ -1233,6 +1240,11 @@ public:
         return sampleReader != nullptr ? sampleReader.get()->make (*audioFormatManager) : nullptr;
     }
 
+    std::shared_ptr<LoopBank> getLoopBank() const
+    {
+      return loopBank != nullptr ? loopBank.get() : nullptr;
+    }
+
     void setSampleReader (std::unique_ptr<AudioFormatReaderFactory> readerFactory,
                           UndoManager* undoManager)
     {
@@ -2059,6 +2071,8 @@ public:
         dataModel   .addListener (*this);
         visibleRange.addListener (*this);
         thumbnail   .addChangeListener (this);
+
+        loopBankChanged(dataModel.getLoopBank());
     }
 
 private:
@@ -2108,17 +2122,20 @@ private:
 
     void loopBankChanged(std::shared_ptr<LoopBank> value) override
     {
-      loopBank = value.get();
-      /* juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank"); */
-      auto &afm = dataModel.getAudioFormatManager();
-      const String &loopBankDir = value.get()->getDirName();
-      loopBankThumbnails.clear();
-      for (DirectoryEntry entry : RangedDirectoryIterator (File(loopBankDir), false)) {
-        auto file = entry.getFile();
-        // AudioFormatReader *afr = manager.createReaderFor(file);
-        loopBankThumbnails.emplace_back(4, afm, thumbnailCache);
-        auto &thumbnail = loopBankThumbnails.back();
-        thumbnail.setSource(new FileInputSource(file));
+      if (value != nullptr) {
+        juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank");
+        loopBank = value.get();
+        /* juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank"); */
+        auto &afm = dataModel.getAudioFormatManager();
+        const String &loopBankDir = value.get()->getDirName();
+        loopBankThumbnails.clear();
+        for (DirectoryEntry entry : RangedDirectoryIterator (File(loopBankDir), false)) {
+          auto file = entry.getFile();
+          // AudioFormatReader *afr = manager.createReaderFor(file);
+          loopBankThumbnails.emplace_back(4, afm, thumbnailCache);
+          auto &thumbnail = loopBankThumbnails.back();
+          thumbnail.setSource(new FileInputSource(file));
+        }
       }
     }
 
@@ -2492,7 +2509,7 @@ private:
     {
         auto bounds = getLocalBounds();
 
-        auto topBar = bounds.removeFromTop (50);
+        auto topBar = bounds.removeFromTop (25);
         auto padding = 4;
         loadNewSampleButton .setBounds (topBar.removeFromRight (100).reduced (padding));
         loadNewBankButton   .setBounds (topBar.removeFromRight (100).reduced (padding));
@@ -2501,7 +2518,7 @@ private:
         centreFrequencyLabel.setBounds (topBar.removeFromLeft  (100).reduced (padding));
         centreFrequency     .setBounds (topBar.removeFromLeft  (100).reduced (padding));
 
-        auto bottomBar = bounds.removeFromBottom (50);
+        auto bottomBar = bounds.removeFromBottom (25);
         loopKindLabel   .setBounds (bottomBar.removeFromLeft (100).reduced (padding));
         loopKindNone    .setBounds (bottomBar.removeFromLeft (80) .reduced (padding));
         loopKindForward .setBounds (bottomBar.removeFromLeft (80) .reduced (padding));
@@ -2576,7 +2593,8 @@ struct ProcessorState
 };
 
 //==============================================================================
-class SamplerAudioProcessor  : public AudioProcessor
+class SamplerAudioProcessor  : public AudioProcessor,
+                               private DataModel::Listener
 {
 public:
     SamplerAudioProcessor()
@@ -2626,6 +2644,9 @@ public:
           //setLoopBankPath(path);
         });
         ppp.listenLoopBankPath(loopBankPathListener);
+
+        dataModel.addListener (*this);
+        shew("startup");
     }
 
     // TODO get rid of this
@@ -2930,11 +2951,13 @@ private:
                                ppp,
                                undoManager)
         {
+            shew("Adding SamplerAudioProcessorEditor listener to dataModel");
             dataModel.addListener (*this);
             mpeSettings.addListener (*this);
 
             /* formatManager.registerBasicFormats(); */
 
+            tabbedComponent.setTabBarDepth(30);
             addAndMakeVisible (tabbedComponent);
 
             auto lookFeel = dynamic_cast<LookAndFeel_V4*> (&getLookAndFeel());
@@ -2960,8 +2983,8 @@ private:
             // Make sure that before the constructor has finished, you've set the
             // editor's size to whatever you need it to be.
             setResizable (true, true);
-            setResizeLimits (640, 480, 2560, 1440);
-            setSize (640, 480);
+            setResizeLimits (320, 240, 2560, 1440);
+            setSize (320, 240);
 
             juce::Logger::getCurrentLogger()->writeToLog("SamplerAudioProcessorEditor()");
         }
@@ -3013,7 +3036,7 @@ private:
         void loopBankChanged(std::shared_ptr<LoopBank> value) override
         {
           juce::Logger::getCurrentLogger()->writeToLog("SAPE dm listener got loop bank");
-          samplerAudioProcessor.setLoopBank(value);
+          /* samplerAudioProcessor.setLoopBank(value); */
         }
 
         void sampleReaderChanged (std::shared_ptr<AudioFormatReaderFactory> value) override
@@ -3107,6 +3130,12 @@ private:
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioProcessorEditor)
     };
+
+    void loopBankChanged(std::shared_ptr<LoopBank> value) override
+    {
+      juce::Logger::getCurrentLogger()->writeToLog("SAP dm listener got loop bank");
+      setLoopBank(value);
+    }
 
     bool supportsDoublePrecisionProcessing() const override {
       return false;
@@ -3222,7 +3251,8 @@ private:
             }
         }
 
-        juce::Logger::getCurrentLogger()->writeToLog("loading " + ppp.getLoopBankPath());
+        shew("loading " + ppp.getLoopBankPath());
+        dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(ppp.getLoopBankPath(), 120)), nullptr);
 
         /* loadLoopBankFromParamMaybe(); */
     }
@@ -3230,6 +3260,8 @@ private:
     void loadLoopBankFromParamMaybe() {
       if (ppp.getLoopBankPath() != "") {
         juce::Logger::getCurrentLogger()->writeToLog("pre-loading bank " + ppp.getLoopBankPath());
+        //dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(ppp.getLoopBankPath(), 120)), nullptr);
+        /* dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank("/Users/gmt/Desktop/loopo logic/sf/sf.lo/", 120)), nullptr); */
         //setLoopBankPath (ppp.getLoopBankPath());
       }
     }
