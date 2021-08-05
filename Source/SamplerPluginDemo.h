@@ -74,8 +74,17 @@
 #define LOGFILE "/tmp/loopo.log"
 
 void shew(const String &s) {
-  FileLogger fl(File(LOGFILE), "heyo");
-  fl.logMessage(s);
+  /* FileLogger fl(File(LOGFILE), "heyo"); */
+  /* fl.logMessage(s); */
+}
+
+template <typename ValueType>
+Rectangle<ValueType> resize(Rectangle<ValueType> rect, double ratio) {
+  int w = rect.getWidth();
+  int h = rect.getHeight();
+  int ww = (int)(w * ratio);
+  int hh = (int)(h * ratio);
+  return rect.withSizeKeepingCentre(ww, hh);
 }
 
 // TODO should be a function
@@ -2178,20 +2187,31 @@ private:
           /* juce::Logger::getCurrentLogger()->writeToLog("rend " + std::to_string(col) + " " + std::to_string(row)); */
           /* juce::Logger::getCurrentLogger()->writeToLog("rend bounds " + subBounds.toString()); */
           bool isOn = loopBank == nullptr ? false : loopBank->isOn(inx);
+          Colour ca = Colours::lightblue;
+          Colour cb = Colours::darkgrey;
           if (isOn) {
-            g.setColour (Colours::white);
-            g.fillRect(subBounds);
-            g.setGradientFill (ColourGradient (Colours::darkgrey,
-                                               subBounds.getTopLeft().toFloat(),
-                                               Colours::lightgrey,
-                                               subBounds.getBottomLeft().toFloat(),
-                                               false));
-          } else {
+            subBounds = resize(subBounds, 1.1);
             g.setColour (Colours::black);
             g.fillRect(subBounds);
-            g.setGradientFill (ColourGradient (Colours::lightblue,
+            g.setGradientFill (ColourGradient (ca.brighter(0.7),
                                                subBounds.getTopLeft().toFloat(),
-                                               Colours::darkgrey,
+                                               cb.brighter(),
+                                               subBounds.getBottomLeft().toFloat(),
+                                               false));
+            /* g.setColour (Colours::white); */
+            /* g.fillRect(subBounds); */
+            /* g.setGradientFill (ColourGradient (Colours::darkgrey, */
+            /*                                    subBounds.getTopLeft().toFloat(), */
+            /*                                    Colours::lightgrey, */
+            /*                                    subBounds.getBottomLeft().toFloat(), */
+            /*                                    false)); */
+          } else {
+            subBounds = resize(subBounds, 0.9);
+            g.setColour (Colours::black);
+            g.fillRect(subBounds);
+            g.setGradientFill (ColourGradient (ca,
+                                               subBounds.getTopLeft().toFloat(),
+                                               cb,
                                                subBounds.getBottomLeft().toFloat(),
                                                false));
           }
