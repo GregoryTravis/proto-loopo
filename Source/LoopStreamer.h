@@ -10,7 +10,8 @@ class LoopStreamer {
 public:
   LoopStreamer(juce::AudioBuffer<float> *theLoop)
     : loop(theLoop)
-    , currentPosition(0) {
+    , currentPosition(0)
+    , isNoteOn(false) {
     jassert(loop->getNumSamples() > 0);
   }
 
@@ -24,6 +25,24 @@ public:
   void setTime(int64 timeInSamples) {
     currentPosition = timeInSamples % loop->getNumSamples();
   }
+
+  void updateAudio(AudioBuffer<float> &dest) {
+    if (isNoteOn) {
+      stream(dest);
+    } else {
+      advance(dest.getNumSamples());
+    }
+  }
+
+  void updateMidi(bool _isNoteOn) {
+    isNoteOn = _isNoteOn;
+  }
+
+  bool isOn() {
+    return isNoteOn;
+  }
+
+private:
 
   // Write the next n samples from the repeating loop into the destination
   // buffer, where n is the destination buffer's length. Advances the current
@@ -93,6 +112,7 @@ public:
 private:
   juce::AudioBuffer<float> *loop;
   int currentPosition;
+  bool isNoteOn;
 };
 
 #endif // LOOP_STREAMER

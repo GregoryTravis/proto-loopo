@@ -189,7 +189,7 @@ public:
 
     std::vector<AudioBuffer<float>*> *abs = readLoopDir(dirName);
     streamers = new std::vector<LoopStreamer*>();
-    ons = new std::vector<bool>(abs->size(), false);
+    /* ons = new std::vector<bool>(abs->size(), false); */
 
     resampledAbs = new std::vector<AudioBuffer<float>*>();
 
@@ -220,11 +220,10 @@ public:
     }
     int note = m.getNoteNumber();
     int index = note - firstNote;
-    if (index < 0 || index >= ons->size()) {
+    if (index < 0 || index >= streamers->size()) {
       return;
     }
-    (*ons)[index] = m.isNoteOn();
-    /* juce::Logger::getCurrentLogger()->writeToLog("flip " + std::to_string(index) + " " + std::to_string((*ons)[index])); */
+    (*streamers)[index]->updateMidi(m.isNoteOn());
   }
 
   ~LoopBank() {
@@ -236,7 +235,7 @@ public:
       delete ls;
     }
     delete streamers;
-    delete ons;
+    /* delete ons; */
   }
 
   // The original design of this class assumed that we always started at 0 and
@@ -252,15 +251,8 @@ public:
   void stream(AudioBuffer<float> &dest) {
     dest.clear();
     for (int i = 0; i < streamers->size(); ++i) {
-      if ((*ons)[i]) {
-        (*streamers)[i]->stream(dest);
-      } else {
-        (*streamers)[i]->advance(dest.getNumSamples());
-      }
+      (*streamers)[i]->updateAudio(dest);
     }
-    /* for (LoopStreamer *ls : *streamers) { */
-    /*   ls->stream(dest); */
-    /* } */
   }
 
   int size() {
@@ -273,7 +265,11 @@ public:
 
   // Returns false if out of range.
   bool isOn(int index) {
-    return (*ons)[index];
+    if (index < 0 || index >= streamers->size()) {
+      return false;
+    } else {
+      return (*streamers)[index]->isOn();
+    }
   }
 
 private:
@@ -281,7 +277,7 @@ private:
   const String dirName;
   std::vector<AudioBuffer<float>*> *resampledAbs;
   std::vector<LoopStreamer*> *streamers;
-  std::vector<bool> *ons;
+  /* std::vector<bool> *ons; */
   const int firstNote = 72 - 24;
 };
 
@@ -2415,7 +2411,7 @@ public:
               // TODO: delete the old one?
               /* dataModel.setLoopBankPath(std::unique_ptr<LoopBank>(loopBank), &undoManager); */
               ppp.setLoopBankPath(result.getFullPathName());
-              dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(result.getFullPathName(), 120)), &undoManager);
+              dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(result.getFullPathName(), 90)), &undoManager);
               /* loopBankPathLabel.setText("Loop Bank: " + result.getFileName(), NotificationType::dontSendNotification); */
 
               /*
@@ -3272,7 +3268,7 @@ private:
         }
 
         shew("loading " + ppp.getLoopBankPath());
-        dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(ppp.getLoopBankPath(), 120)), nullptr);
+        dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(ppp.getLoopBankPath(), 90)), nullptr);
 
         /* loadLoopBankFromParamMaybe(); */
     }
