@@ -1,5 +1,4 @@
 Loopo: Beat-synchronized loop sampler plugin
-
 ====
 
 <p align="center">
