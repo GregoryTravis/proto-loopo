@@ -3,7 +3,7 @@ Loopo: Beat-synchronized loop sampler plugin
 ====
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/GregoryTravis/loopo/master/images/loopo.gif">
+  <img src="https://github.com/GregoryTravis/proto-loopo/blob/master/images/loopo.gif">
 </p>
 
 Loopo is a sampler with a very simple twist: it does not start playing a sample
