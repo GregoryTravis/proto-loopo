@@ -35,8 +35,10 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SamplerPlugin"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="SamplerPlugin"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SamplerPlugin"
+                       macOSDeploymentTarget="12.6.3" osxCompatibility="12.6.3 SDK"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="SamplerPlugin"
+                       macOSDeploymentTarget="12.6.3" osxCompatibility="12.6.3 SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path=""/>
