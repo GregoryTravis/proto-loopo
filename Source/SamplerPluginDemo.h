@@ -827,6 +827,7 @@ private:
 namespace juce
 {
 
+/*
 bool operator== (const MPEZoneLayout& a, const MPEZoneLayout& b)
 {
     if (a.getLowerZone() != b.getLowerZone())
@@ -842,6 +843,7 @@ bool operator!= (const MPEZoneLayout& a, const MPEZoneLayout& b)
 {
     return ! (a == b);
 }
+*/
 
 template<>
 struct VariantConverter<LoopMode>
