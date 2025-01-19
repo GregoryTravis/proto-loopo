@@ -3,8 +3,8 @@
 
 // Hard-coded to 44.1 because I stink
 #define SRATE 44100
-#define ATTACK_DURATION_S (0.05)
-#define RELEASE_DURATION_S (0.1)
+#define ATTACK_DURATION_S (0.001)
+#define RELEASE_DURATION_S (0.05)
 
 // When a note is first turned on, it is set to asr_as and the envelope gain (EG) is set to 0.
 // When a note is first turned off, it is set to asr_r.
