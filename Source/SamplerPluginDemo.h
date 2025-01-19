@@ -71,6 +71,8 @@
 /*   juce::Logger::getCurrentLogger()->writeToLog(msg); */
 /* } */
 
+const int bpm = 120;
+
 #define LOGFILE "/tmp/loopo.log"
 const bool enableShew = true;
 FileLogger *shew_fl = nullptr;
@@ -115,6 +117,7 @@ AudioBuffer<float> *readLoop(const String &filename) {
 
   /* juce::Logger::getCurrentLogger()->writeToLog( */
   /*     "Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples)); */
+  //shew("Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples));
 
   jassert(afr->numChannels == 2);
   // TODO assert not bigger than max int
@@ -2423,7 +2426,7 @@ public:
               // TODO: delete the old one?
               /* dataModel.setLoopBankPath(std::unique_ptr<LoopBank>(loopBank), &undoManager); */
               ppp.setLoopBankPath(result.getFullPathName());
-              dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(result.getFullPathName(), 90)), &undoManager);
+              dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(result.getFullPathName(), bpm)), &undoManager);
               /* loopBankPathLabel.setText("Loop Bank: " + result.getFileName(), NotificationType::dontSendNotification); */
 
               /*
@@ -3280,7 +3283,7 @@ private:
         }
 
         shew("loading " + ppp.getLoopBankPath());
-        dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(ppp.getLoopBankPath(), 90)), nullptr);
+        dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(ppp.getLoopBankPath(), bpm)), nullptr);
 
         /* loadLoopBankFromParamMaybe(); */
     }
