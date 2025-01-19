@@ -126,10 +126,6 @@ AudioBuffer<float> *readLoop(const String &filename) {
   return ab;
 }
 
-AudioBuffer<float> *readLoop(const File &file) {
-  return readLoop(file.getFullPathName());
-}
-
 std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
   std::vector<AudioBuffer<float>*> *abs = new std::vector<AudioBuffer<float>*>();
    
@@ -137,10 +133,17 @@ std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
   {
     ScopedTimeMeasurement m(elapsed);
 
+    std::vector<String> fullPaths;
     for (DirectoryEntry entry : RangedDirectoryIterator (File(dirname), false)) {
       /* juce::Logger::getCurrentLogger()->writeToLog("reading " + entry.getFile().getFullPathName()); */
-      shew("reading " + entry.getFile().getFullPathName());
-      auto loop = readLoop(entry.getFile());
+      //shew("scanning " + entry.getFile().getFullPathName());
+      fullPaths.push_back(String(entry.getFile().getFullPathName()));
+    }
+    std::sort(fullPaths.begin(), fullPaths.end());
+
+    for (auto it = fullPaths.begin(); it != fullPaths.end(); ++it) {
+      //shew("reading " + *it);
+      auto loop = readLoop(*it);
       if (loop != nullptr) {
         abs->push_back(loop);
       }
