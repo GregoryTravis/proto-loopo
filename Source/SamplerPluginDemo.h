@@ -3178,14 +3178,20 @@ private:
 
     // TODO Make static or function
     void synchronizeWithPlayHead() {
+      if (loopBank == nullptr) {
+        return;
+      }
+
       AudioPlayHead *ph = getPlayHead();
-      AudioPlayHead::CurrentPositionInfo cpi;
-      if (ph->getCurrentPosition(cpi)) {
+      Optional<AudioPlayHead::PositionInfo> pio = ph->getPosition();
+      if (pio.hasValue()) {
+        AudioPlayHead::PositionInfo pi = *pio;
         // If the timeline is playing, sync with it. Otherwise, just continue
         // playing sequentially by not calling setTime() at all.
-        if (cpi.isPlaying) {
-          if (loopBank != nullptr) {
-              loopBank->setTime(cpi.timeInSamples);
+        if (pi.getIsPlaying()) {
+          Optional<int64_t> tiso = pi.getTimeInSamples();
+          if (tiso.hasValue()) {
+              loopBank->setTime(*tiso);
           }
         }
       }
