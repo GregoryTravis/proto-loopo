@@ -3186,6 +3186,7 @@ private:
       Optional<AudioPlayHead::PositionInfo> pio = ph->getPosition();
       if (pio.hasValue()) {
         AudioPlayHead::PositionInfo pi = *pio;
+        //dumpPositionInfo(pi);
         // If the timeline is playing, sync with it. Otherwise, just continue
         // playing sequentially by not calling setTime() at all.
         if (pi.getIsPlaying()) {
@@ -3196,6 +3197,17 @@ private:
         }
       }
     }
+
+    /*
+    void >dumpPositionInfo(AudioPlayHead::PositionInfo &pi) {
+      Optional<double> bpmo = pi.getBpm();
+      if (bpmo.hasValue()) {
+        shew("bpm " + std::to_string(*bpmo));
+      } else {
+        shew("bpm not available");
+      }
+    }
+    */
 
     //==============================================================================
     void processFloat (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
