@@ -183,10 +183,54 @@ AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
     auto numInputSamplesRead = interpolator.process(speedRatio,
         inbuf.getReadPointer(c),
         outbuf->getWritePointer(c),
-        outbuf->getNumSamples());
+        outbuf->getNumSamples(),
+        inbuf.getNumSamples(), 0);
     /* juce::Logger::getCurrentLogger()->writeToLog( */
     /*     "Resamp input len " + std::to_string(inbuf.getNumSamples()) + " output len " + std::to_string(outbuf->getNumSamples()) + */
     /*       " num read " + std::to_string(numInputSamplesRead)); */
+
+#if 0
+    {
+      // See if it's really incremental by doing it in one piece and then two pieces.
+      shew("interpy");
+      LagrangeInterpolator interpolator;
+      auto outbuf0 = new AudioBuffer<float>(2, outNumSamples);
+      auto outbuf1 = new AudioBuffer<float>(2, outNumSamples);
+
+      interpolator.reset();
+      auto numInputSamplesRead0 = interpolator.process(speedRatio,
+          inbuf.getReadPointer(0),
+          outbuf0->getWritePointer(0),
+          outbuf0->getNumSamples(),
+          inbuf.getNumSamples(), 0);
+      shew("full sizes " + std::to_string(outbuf0->getNumSamples()) + " " + std::to_string(numInputSamplesRead0));
+
+      int partial0 = outbuf->getNumSamples() / 2;
+      int partial1 = outbuf->getNumSamples() - partial0;
+
+      interpolator.reset();
+
+      auto numInputSamplesRead1_0 = interpolator.process(speedRatio,
+          inbuf.getReadPointer(0),
+          outbuf1->getWritePointer(0),
+          partial0,
+          inbuf.getNumSamples(), 0);
+      auto numInputSamplesRead1_1 = interpolator.process(speedRatio,
+          inbuf.getReadPointer(0) + numInputSamplesRead1_0,
+          outbuf1->getWritePointer(0) + partial0,
+          partial1,
+          inbuf.getNumSamples(), 0);
+
+      shew("part 0 sizes " + std::to_string(partial0) + " " + std::to_string(numInputSamplesRead1_0));
+      shew("part 1 sizes " + std::to_string(partial1) + " " + std::to_string(numInputSamplesRead1_1));
+
+      for (int i = 0; i < outbuf0->getNumSamples(); ++i) {
+        if (outbuf0->getWritePointer(0)[i] != outbuf1->getWritePointer(0)[i]) {
+          shew("diff " + std::to_string(i) + " " + std::to_string(outbuf0->getWritePointer(0)[i]) + " " + std::to_string(outbuf1->getWritePointer(0)[i]));
+        }
+      }
+    }
+#endif
   }
   return outbuf;
 }
