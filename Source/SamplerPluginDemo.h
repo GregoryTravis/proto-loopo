@@ -49,7 +49,7 @@
 #pragma once
 
 #include "DemoUtilities.h"
-#include "LoopStreamer.h"
+#include "ResamplingLoopStreamer.h"
 
 #include <array>
 #include <atomic>
@@ -62,6 +62,8 @@
 #include <functional>
 #include <mutex>
 
+#include "shew.h"
+
 /* void listen(std::function<void(int)> foo) */
 /* { */
 /*   foo(3); */
@@ -72,19 +74,6 @@
 /* } */
 
 const int bpm = 120;
-
-#define LOGFILE "/tmp/loopo.log"
-const bool enableShew = true;
-FileLogger *shew_fl = nullptr;
-
-void shew(const String &s) {
-  if (enableShew) {
-    if (shew_fl == nullptr) {
-      shew_fl = new FileLogger(File(LOGFILE), "heyo");
-    }
-    shew_fl->logMessage(s);
-  }
-}
 
 template <typename ValueType>
 Rectangle<ValueType> resize(Rectangle<ValueType> rect, double ratio) {
@@ -245,7 +234,7 @@ public:
     /* juce::Logger::getCurrentLogger()->writeToLog("bpm " + std::to_string(bpm) + " len " + std::to_string(desiredLength)); */
 
     std::vector<AudioBuffer<float>*> *abs = readLoopDir(dirName);
-    streamers = new std::vector<LoopStreamer*>();
+    streamers = new std::vector<ResamplingLoopStreamer*>();
     /* ons = new std::vector<bool>(abs->size(), false); */
 
     resampledAbs = new std::vector<AudioBuffer<float>*>();
@@ -262,7 +251,7 @@ public:
     /* juce::Logger::getCurrentLogger()->writeToLog("resample " + String(elapsed) + "s"); */
 
     for (AudioBuffer<float> *ab : *resampledAbs) {
-      streamers->push_back(new LoopStreamer(ab));
+      streamers->push_back(new ResamplingLoopStreamer(ab));
     }
 
     for (AudioBuffer<float> *ab : *abs) {
@@ -288,7 +277,7 @@ public:
       delete ab;
     }
     delete resampledAbs;
-    for (LoopStreamer *ls : *streamers) {
+    for (ResamplingLoopStreamer *ls : *streamers) {
       delete ls;
     }
     delete streamers;
@@ -300,15 +289,15 @@ public:
   // synchronize with the host timeline, we need to lock our idea of time to
   // the host. Calling this before each stream can do this.
   void setTime(int64 timeInSamples) {
-    for (LoopStreamer *ls : *streamers) {
+    for (ResamplingLoopStreamer *ls : *streamers) {
       ls->setTime(timeInSamples);
     }
   }
 
-  void stream(AudioBuffer<float> &dest) {
+  void stream(Optional<AudioPlayHead::PositionInfo> &pio, AudioBuffer<float> &dest) {
     dest.clear();
     for (int i = 0; i < streamers->size(); ++i) {
-      (*streamers)[i]->updateAudio(dest);
+      (*streamers)[i]->stream(pio, dest);
     }
   }
 
@@ -333,7 +322,7 @@ private:
   // TODO: Do we need this?
   const String dirName;
   std::vector<AudioBuffer<float>*> *resampledAbs;
-  std::vector<LoopStreamer*> *streamers;
+  std::vector<ResamplingLoopStreamer*> *streamers;
   /* std::vector<bool> *ons; */
   const int firstNote = 72 - 24;
 };
@@ -3226,6 +3215,7 @@ private:
         return;
       }
 
+#if 0
       AudioPlayHead *ph = getPlayHead();
       Optional<AudioPlayHead::PositionInfo> pio = ph->getPosition();
       if (pio.hasValue()) {
@@ -3240,18 +3230,25 @@ private:
           }
         }
       }
+#endif
     }
 
-    /*
-    void >dumpPositionInfo(AudioPlayHead::PositionInfo &pi) {
+#if 0
+    void dumpPositionInfo(AudioPlayHead::PositionInfo &pi) {
       Optional<double> bpmo = pi.getBpm();
       if (bpmo.hasValue()) {
         shew("bpm " + std::to_string(*bpmo));
       } else {
         shew("bpm not available");
       }
+      Optional<int64_t> tiso = pi.getTimeInSamples();
+      if (tiso.hasValue()) {
+        shew("tis " + std::to_string(*tiso));
+      } else {
+        shew("tis not available");
+      }
     }
-    */
+#endif
 
     //==============================================================================
     void processFloat (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
@@ -3261,9 +3258,12 @@ private:
         jassert(getMainBusNumInputChannels() == 0);
         jassert(getMainBusNumOutputChannels() == 2);
 
-        synchronizeWithPlayHead();
+        AudioPlayHead *ph = getPlayHead();
+        Optional<AudioPlayHead::PositionInfo> pio = ph->getPosition();
+
+        //synchronizeWithPlayHead();
         if (loopBank != nullptr) {
-          loopBank->stream(buffer);
+          loopBank->stream(pio, buffer);
         }
 
         int time;
