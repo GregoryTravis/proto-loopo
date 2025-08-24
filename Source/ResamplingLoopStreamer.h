@@ -24,7 +24,7 @@ class ResamplingLoopStreamer {
     //
     // Mixes the audio onto the dest using addFrom(); if your buffer contains
     // junk, .clear() it first.
-    void stream(Optional<AudioPlayHead::PositionInfo> pio, AudioBuffer<float> &dest) {
+    void stream(Optional<AudioPlayHead::PositionInfo> pio, double sampleRate, AudioBuffer<float> &dest) {
       updateTimeStuff(pio);
 
       int destNumSamples = dest.getNumSamples();
@@ -41,7 +41,7 @@ class ResamplingLoopStreamer {
         int writePtrIndex = stepIndex % destNumChannels;
         const float * readPtr = readPtrs[readPtrIndex];
         const float * writePtr = writePtrs[writePtrIndex];
-        stream(readPtr, writePtr, destNumSamples);
+        stream(sampleRate, readPtr, writePtr, destNumSamples);
       }
 
       timeInSamples += dest.getNumSamples();
@@ -52,12 +52,50 @@ class ResamplingLoopStreamer {
     }
 
   private:
-    void stream(const float *readPtr, float *writePtr, int destNumSamples) {
-      t = tis .. +destNumSamples
-      mod realtime loop length
-      map to sample time
-      mod sample length
-      lerp
+    void stream(double sampleRate, const float *readPtr, float *writePtr, int destNumSamples) {
+      // TODO move some of this outwards?
+      int beatsPerLoop = 8;
+      double loopsPerMinute = bpm / beatsPerLoop;
+      double loopsPerSecond = loopsPerMinute * (1.0 / 60.0); // minutes per second
+      double secondsPerLoop = 1.0 / loopsPerSecond;
+      double samplesPerLoopD = secondsPerLoop * sampleRate;
+      int samplesPerLoop = (int) samplesPerLoop;
+
+      for (int64 i = 0; i < destNumSamples; ++i) {
+        // TODO incrementalize
+        int timeInSamplesInLoop = timeInSamples + i;
+        int sampleWithinRealtimeLoop = timeInSamplesInLoop % samplesPerLoop;
+        double sampleWithinSrcLoopUnModded = (((double) sampleWithinRealtimeLoop) / ((double) samplesPerLoop)) * numSrcSamples;
+        double sampleWithinSrcLoop = sampleWithinSrcLoopUnModded % (double) numSrcSamples;
+        int swslI = (int) sampleWithinSrcLoop;
+        double swslF = sampleWithinSrcLoop - swslI;
+        int swslI2 = swslI + 1;
+
+        // TODO comment out
+        jassert(swslI2 <= numSrcSamples);
+
+        if (swslI2 >= numSrcSamples) {
+          swslI2 -= numSrcSamples;
+        }
+
+        // TODO comment out
+        jassert(swslI2 < numSrcSamples);
+
+        // TODO comment out
+        jassert(sampleWithinSrcLoopUnModded % (double) numSrcSamples == sampleWithinSrcLoopUnModded);
+        jassert(swslI < sampleWithinSrcLoop);
+        jassert(swslI >= 0);
+        jassert(swslF >= 0.0);
+        jassert(swslF < 1.0);
+        jassert(swslI >= 0);
+        jassert(swslI < numSrcSamples);
+
+        float s = readPtr[swslI];
+        float s2 = readPtr[swslI2];
+        float interp = (s * (1.0 - swslF)) + (s2 * swslF);
+
+        writePtr[i] = interp;
+      }
     }
 
     void updateTimeStuff(Optional<AudioPlayHead::PositionInfo> pio) {

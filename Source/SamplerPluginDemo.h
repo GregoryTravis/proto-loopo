@@ -294,10 +294,10 @@ public:
     }
   }
 
-  void stream(Optional<AudioPlayHead::PositionInfo> &pio, AudioBuffer<float> &dest) {
+  void stream(Optional<AudioPlayHead::PositionInfo> &pio, double sampleRate, AudioBuffer<float> &dest) {
     dest.clear();
     for (int i = 0; i < streamers->size(); ++i) {
-      (*streamers)[i]->stream(pio, dest);
+      (*streamers)[i]->stream(pio, sampleRate, dest);
     }
   }
 
@@ -2725,9 +2725,10 @@ public:
       /* delete myLoop3; */
     }
 
-    void prepareToPlay (double sampleRate, int) override
+    void prepareToPlay (double _sampleRate, int) override
     {
-        synthesiser.setCurrentPlaybackSampleRate (sampleRate);
+      sampleRate = _sampleRate;
+      synthesiser.setCurrentPlaybackSampleRate (sampleRate);
     }
 
     void releaseResources() override {}
@@ -3263,7 +3264,7 @@ private:
 
         //synchronizeWithPlayHead();
         if (loopBank != nullptr) {
-          loopBank->stream(pio, buffer);
+          loopBank->stream(pio, sampleRate, buffer);
         }
 
         int time;
@@ -3378,6 +3379,7 @@ private:
     std::unique_ptr<AudioFormatReaderFactory> readerFactory;
     std::shared_ptr<MPESamplerSound> samplerSound = std::make_shared<MPESamplerSound>();
     MPESynthesiser synthesiser;
+    double sampleRate = 1.0;
 
     // This mutex is used to ensure we don't modify the processor state during
     // a call to createEditor, which would cause the UI to become desynched
