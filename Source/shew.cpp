@@ -1,5 +1,18 @@
 #include "shew.h"
 
+#include "DemoUtilities.h"
+
+#include <array>
+#include <atomic>
+#include <memory>
+#include <vector>
+#include <tuple>
+#include <iomanip>
+#include <functional>
+#include <sstream>
+#include <functional>
+#include <mutex>
+
 #define LOGFILE "/tmp/loopo.log"
 const bool enableShew = true;
 FileLogger *shew_fl = nullptr;

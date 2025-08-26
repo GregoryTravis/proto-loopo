@@ -8,6 +8,10 @@
               jucerFormatVersion="1">
   <MAINGROUP id="T0BEGZ" name="Loopo">
     <GROUP id="{4860042C-F3C1-D061-E818-CC6BFA69682D}" name="Source">
+      <FILE id="TTf4oZ" name="shew.cpp" compile="1" resource="0" file="Source/shew.cpp"/>
+      <FILE id="V7idTf" name="shew.h" compile="0" resource="0" file="Source/shew.h"/>
+      <FILE id="d2mgH4" name="ResamplingLoopStreamer.h" compile="0" resource="0"
+            file="Source/ResamplingLoopStreamer.h"/>
       <FILE id="UoEYKq" name="SamplerPluginDemo.h" compile="0" resource="0"
             file="Source/SamplerPluginDemo.h"/>
       <FILE id="UVp2h9" name="LoopStreamer.h" compile="0" resource="0" file="Source/LoopStreamer.h"/>

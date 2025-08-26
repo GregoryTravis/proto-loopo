@@ -73,8 +73,6 @@
 /*   juce::Logger::getCurrentLogger()->writeToLog(msg); */
 /* } */
 
-const int bpm = 120;
-
 template <typename ValueType>
 Rectangle<ValueType> resize(Rectangle<ValueType> rect, double ratio) {
   int w = rect.getWidth();
@@ -157,106 +155,20 @@ std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
 /*   return abs; */
 /* } */
 
-// TODO should be a function
-AudioBuffer<float> *resample(AudioBuffer<float> &inbuf, int outNumSamples) {
-  // TODO handle more cases
-  jassert(inbuf.getNumChannels() == 2);
-  jassert(outNumSamples > 0);
-  auto outbuf = new AudioBuffer<float>(2, outNumSamples);
-  // WindowedSincInterpolator interpolator;
-  LagrangeInterpolator interpolator;
-  interpolator.reset();
-  // 2 in 1 out -> speedRatio = 2
-  double speedRatio = ((double)inbuf.getNumSamples()) / ((double)outbuf->getNumSamples());
-  for (int c = 0; c < 2; ++c) {
-    auto numInputSamplesRead = interpolator.process(speedRatio,
-        inbuf.getReadPointer(c),
-        outbuf->getWritePointer(c),
-        outbuf->getNumSamples(),
-        inbuf.getNumSamples(), 0);
-    /* juce::Logger::getCurrentLogger()->writeToLog( */
-    /*     "Resamp input len " + std::to_string(inbuf.getNumSamples()) + " output len " + std::to_string(outbuf->getNumSamples()) + */
-    /*       " num read " + std::to_string(numInputSamplesRead)); */
-
-#if 0
-    {
-      // See if it's really incremental by doing it in one piece and then two pieces.
-      shew("interpy");
-      LagrangeInterpolator interpolator;
-      auto outbuf0 = new AudioBuffer<float>(2, outNumSamples);
-      auto outbuf1 = new AudioBuffer<float>(2, outNumSamples);
-
-      interpolator.reset();
-      auto numInputSamplesRead0 = interpolator.process(speedRatio,
-          inbuf.getReadPointer(0),
-          outbuf0->getWritePointer(0),
-          outbuf0->getNumSamples(),
-          inbuf.getNumSamples(), 0);
-      shew("full sizes " + std::to_string(outbuf0->getNumSamples()) + " " + std::to_string(numInputSamplesRead0));
-
-      int partial0 = outbuf->getNumSamples() / 2;
-      int partial1 = outbuf->getNumSamples() - partial0;
-
-      interpolator.reset();
-
-      auto numInputSamplesRead1_0 = interpolator.process(speedRatio,
-          inbuf.getReadPointer(0),
-          outbuf1->getWritePointer(0),
-          partial0,
-          inbuf.getNumSamples(), 0);
-      auto numInputSamplesRead1_1 = interpolator.process(speedRatio,
-          inbuf.getReadPointer(0) + numInputSamplesRead1_0,
-          outbuf1->getWritePointer(0) + partial0,
-          partial1,
-          inbuf.getNumSamples(), 0);
-
-      shew("part 0 sizes " + std::to_string(partial0) + " " + std::to_string(numInputSamplesRead1_0));
-      shew("part 1 sizes " + std::to_string(partial1) + " " + std::to_string(numInputSamplesRead1_1));
-
-      for (int i = 0; i < outbuf0->getNumSamples(); ++i) {
-        if (outbuf0->getWritePointer(0)[i] != outbuf1->getWritePointer(0)[i]) {
-          shew("diff " + std::to_string(i) + " " + std::to_string(outbuf0->getWritePointer(0)[i]) + " " + std::to_string(outbuf1->getWritePointer(0)[i]));
-        }
-      }
-    }
-#endif
-  }
-  return outbuf;
-}
-
 // Keeps ownership of the ABs
 class LoopBank {
 public:
-  LoopBank(const String dn, const int bpm)
+  LoopBank(const String dn)
     : dirName(dn)
   {
-    int desiredLength = 44100.0 * 4.0 * (60.0 / ((double)bpm));
-    /* juce::Logger::getCurrentLogger()->writeToLog("bpm " + std::to_string(bpm) + " len " + std::to_string(desiredLength)); */
-
     std::vector<AudioBuffer<float>*> *abs = readLoopDir(dirName);
     streamers = new std::vector<ResamplingLoopStreamer*>();
     /* ons = new std::vector<bool>(abs->size(), false); */
 
-    resampledAbs = new std::vector<AudioBuffer<float>*>();
-
-    double elapsed;
-    {
-      ScopedTimeMeasurement m(elapsed);
-
-      for (AudioBuffer<float> *ab : *abs) {
-        auto resampledAb = resample(*ab, desiredLength);
-        resampledAbs->push_back(resampledAb);
-      }
-    }
-    /* juce::Logger::getCurrentLogger()->writeToLog("resample " + String(elapsed) + "s"); */
-
-    for (AudioBuffer<float> *ab : *resampledAbs) {
+    for (AudioBuffer<float> *ab : *abs) {
       streamers->push_back(new ResamplingLoopStreamer(ab));
     }
 
-    for (AudioBuffer<float> *ab : *abs) {
-      delete ab;
-    }
     delete abs;
   }
 
@@ -273,25 +185,15 @@ public:
   }
 
   ~LoopBank() {
-    for (AudioBuffer<float> *ab : *resampledAbs) {
-      delete ab;
-    }
-    delete resampledAbs;
     for (ResamplingLoopStreamer *ls : *streamers) {
       delete ls;
     }
     delete streamers;
-    /* delete ons; */
-  }
-
-  // The original design of this class assumed that we always started at 0 and
-  // we always resumed at the sample after the last block, but in order to
-  // synchronize with the host timeline, we need to lock our idea of time to
-  // the host. Calling this before each stream can do this.
-  void setTime(int64 timeInSamples) {
-    for (ResamplingLoopStreamer *ls : *streamers) {
-      ls->setTime(timeInSamples);
+    for (AudioBuffer<float> *ab : *abs) {
+      delete ab;
     }
+    delete abs;
+    /* delete ons; */
   }
 
   void stream(Optional<AudioPlayHead::PositionInfo> &pio, double sampleRate, AudioBuffer<float> &dest) {
@@ -321,7 +223,7 @@ public:
 private:
   // TODO: Do we need this?
   const String dirName;
-  std::vector<AudioBuffer<float>*> *resampledAbs;
+  std::vector<AudioBuffer<float>*> *abs;
   std::vector<ResamplingLoopStreamer*> *streamers;
   /* std::vector<bool> *ons; */
   const int firstNote = 72 - 24;
@@ -2459,7 +2361,7 @@ public:
               // TODO: delete the old one?
               /* dataModel.setLoopBankPath(std::unique_ptr<LoopBank>(loopBank), &undoManager); */
               ppp.setLoopBankPath(result.getFullPathName());
-              dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(result.getFullPathName(), bpm)), &undoManager);
+              dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(result.getFullPathName())), &undoManager);
               /* loopBankPathLabel.setText("Loop Bank: " + result.getFileName(), NotificationType::dontSendNotification); */
 
               /*
@@ -3346,7 +3248,7 @@ private:
         }
 
         shew("loading " + ppp.getLoopBankPath());
-        dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(ppp.getLoopBankPath(), bpm)), nullptr);
+        dataModel.setLoopBank(std::unique_ptr<LoopBank>(new LoopBank(ppp.getLoopBankPath())), nullptr);
 
         /* loadLoopBankFromParamMaybe(); */
     }
