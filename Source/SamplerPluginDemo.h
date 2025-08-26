@@ -111,6 +111,7 @@ AudioBuffer<float> *readLoop(const String &filename) {
   int numSamples = (int)afr->lengthInSamples;
   AudioBuffer<float> *ab = new AudioBuffer<float>(afr->numChannels, numSamples);
   afr->read(ab, 0, numSamples, 0, true, true);
+  /* shew("Read " + std::to_string(ab->getSample(0, 9)) + " " + std::to_string(ab->getSample(1, 9)) + " " + filename.toStdString()); */
   // TODO bad?
   delete afr;
   return ab;
@@ -201,6 +202,12 @@ public:
     for (int i = 0; i < streamers->size(); ++i) {
       (*streamers)[i]->stream(pio, sampleRate, dest);
     }
+    /* for (int i = 0; i < 16; ++i) { */
+    /*   shew("got " + std::to_string(i) + " " + std::to_string(dest.getSample(0, i)) + " " + std::to_string(dest.getSample(1, i))); */
+    /* } */
+    /* dest.getWritePointer(0)[0] = 12; */
+    /* dest.getWritePointer(1)[0] = 13; */
+    /* shew("ggg " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
   }
 
   int size() {

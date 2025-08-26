@@ -61,7 +61,7 @@ class ResamplingLoopStreamer {
       int destNumChannels = dest.getNumChannels();
 
       const float * const * readPtrs = src->getArrayOfReadPointers();
-      float *const * writePtrs = src->getArrayOfWritePointers();
+      float *const * writePtrs = dest.getArrayOfWritePointers();
 
       // We do this many resample steps. The usual cases (1 or 2 onto 1 or 2) make sense,
       // anything else is weird but what are you gonna do?
@@ -69,12 +69,37 @@ class ResamplingLoopStreamer {
       for (int stepIndex = 0; stepIndex < numSteps; ++stepIndex) {
         int readPtrIndex = stepIndex % srcNumChannels;
         int writePtrIndex = stepIndex % destNumChannels;
+
         const float * readPtr = readPtrs[readPtrIndex];
         float * writePtr = writePtrs[writePtrIndex];
+
+        /*
+        shew("ptrs " +
+            std::to_string((int64)readPtrA) + " " + std::to_string((int64)readPtrI) + " " +
+            std::to_string((int64)writePtrA) + " " + std::to_string((int64)writePtrI) + " " +
+            std::to_string(readPtrA == writePtrA) + " " +
+            std::to_string(readPtrI == writePtrI));
+            */
+
+        /* const float * readPtr2 = readPtrs[readPtrIndex]; */
+
+        /* shew("stream " + std::to_string(numSteps) + " " + std::to_string(stepIndex) + " " + std::to_string(readPtrIndex) + " " + */
+        /*       std::to_string(writePtrIndex)); */
         stream(sampleRate, readPtr, writePtr, destNumSamples);
+
+        /* shew("ggg2 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
+        /* writePtr[0] = 14 + stepIndex; */
+        /* shew("ggg22 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
+        /* dest.getWritePointer(writePtrIndex)[0] = 41 + stepIndex; */
+        /* shew("ggg23 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
+        /* shew("ggg3 " + std::to_string(readPtr2[9])); */
       }
 
       timeInSamples += dest.getNumSamples();
+
+      /* dest.getWritePointer(0)[0] = 12; */
+      /* dest.getWritePointer(1)[0] = 13; */
+      /* shew("ggg " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
     }
 
     // When a note is first turned on, it is set to asr_as and the envelope gain (EG) is set to 0.
@@ -100,7 +125,7 @@ class ResamplingLoopStreamer {
   private:
     void stream(double sampleRate, const float *readPtr, float *writePtr, int destNumSamples) {
       // TODO move some of this outwards?
-      int beatsPerLoop = 8;
+      int beatsPerLoop = 4;
       double loopsPerMinute = bpm / beatsPerLoop;
       double loopsPerSecond = loopsPerMinute / 60.0;
       double secondsPerLoop = 1.0 / loopsPerSecond;
@@ -132,7 +157,7 @@ class ResamplingLoopStreamer {
 
         // TODO comment out
         jassert(fmod(sampleWithinSrcLoopUnModded, (double) srcNumSamples) == sampleWithinSrcLoopUnModded);
-        jassert(swslI < sampleWithinSrcLoop);
+        jassert(swslI <= sampleWithinSrcLoop);
         jassert(swslI >= 0);
         jassert(swslF >= 0.0);
         jassert(swslF < 1.0);
@@ -142,6 +167,9 @@ class ResamplingLoopStreamer {
         float s = readPtr[swslI];
         float s2 = readPtr[swslI2];
         float interp = (s * (1.0 - swslF)) + (s2 * swslF);
+
+        /* shew("samp tisil " + std::to_string(timeInSamplesInLoop) + " swsl " + std::to_string(sampleWithinSrcLoop) + " ints " + std::to_string(swslI) + " " + std::to_string(swslI2) + " swslF " + */
+        /*     std::to_string(swslF) + " vals " + std::to_string(s) + " " + std::to_string(s2) + " "+ std::to_string(interp)); */
 
         writePtr[i] += interp;
       }
@@ -162,9 +190,9 @@ class ResamplingLoopStreamer {
           }
         }
 
-        shew("time: bpm " + std::to_string(bpmo.hasValue()) + " " + (bpmo.hasValue() ? std::to_string(*bpmo) : "_") + ", "
-            + " tis " + std::to_string(tiso.hasValue()) + " " + (tiso.hasValue() ? std::to_string(*tiso) : "_") + ", "
-            + " now bpm " + std::to_string(bpm) + " ptis " + std::to_string(playheadTimeInSamples) + " tis " + std::to_string(timeInSamples));
+        /* shew("time: bpm " + std::to_string(bpmo.hasValue()) + " " + (bpmo.hasValue() ? std::to_string(*bpmo) : "_") + ", " */
+        /*     + " tis " + std::to_string(tiso.hasValue()) + " " + (tiso.hasValue() ? std::to_string(*tiso) : "_") + ", " */
+        /*     + " now bpm " + std::to_string(bpm) + " ptis " + std::to_string(playheadTimeInSamples) + " tis " + std::to_string(timeInSamples)); */
       }
     }
 
