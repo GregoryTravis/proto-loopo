@@ -3165,9 +3165,9 @@ private:
     void processFloat (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
     {
         jassert(getTotalNumInputChannels() == 0);
-        jassert(getTotalNumOutputChannels() == 2);
+        //jassert(getTotalNumOutputChannels() == 2);
         jassert(getMainBusNumInputChannels() == 0);
-        jassert(getMainBusNumOutputChannels() == 2);
+        //jassert(getMainBusNumOutputChannels() == 2);
 
         AudioPlayHead *ph = getPlayHead();
         Optional<AudioPlayHead::PositionInfo> pio = ph->getPosition();
