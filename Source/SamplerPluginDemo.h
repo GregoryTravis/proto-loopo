@@ -106,7 +106,7 @@ AudioBuffer<float> *readLoop(const String &filename) {
   /*     "Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples)); */
   //shew("Reading " + file.getFullPathName() + " channels " + std::to_string(afr->numChannels) + " lengthInSamples " + std::to_string(afr->lengthInSamples));
 
-  jassert(afr->numChannels == 2);
+  //jassert(afr->numChannels == 2);
   // TODO assert not bigger than max int
   int numSamples = (int)afr->lengthInSamples;
   AudioBuffer<float> *ab = new AudioBuffer<float>(afr->numChannels, numSamples);
