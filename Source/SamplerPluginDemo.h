@@ -2086,7 +2086,7 @@ private:
     void loopBankChanged(std::shared_ptr<LoopBank> value) override
     {
       if (value != nullptr) {
-        juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank");
+        //juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank");
         loopBank = value.get();
         /* juce::Logger::getCurrentLogger()->writeToLog("WV dm listener got loop bank"); */
         auto &afm = dataModel.getAudioFormatManager();
@@ -2268,7 +2268,7 @@ Value::Listener *lambdaListener(std::function<void(const String&)> ll) {
 
     void valueChanged(Value &rvalue) override {
       String p = rvalue.getValue();
-      juce::Logger::getCurrentLogger()->writeToLog("lambdaListener passing " + p);
+      //juce::Logger::getCurrentLogger()->writeToLog("lambdaListener passing " + p);
       ll(p);
     }
   private:
@@ -2465,8 +2465,8 @@ private:
     void setLoopBankPath(const String& loopBankPath) {
       File file(loopBankPath);
       auto baseName = file.getFileName();
-      juce::Logger::getCurrentLogger()->writeToLog("LIS setText " + loopBankPath);
-      juce::Logger::getCurrentLogger()->writeToLog("LIS setText " + baseName);
+      //juce::Logger::getCurrentLogger()->writeToLog("LIS setText " + loopBankPath);
+      //juce::Logger::getCurrentLogger()->writeToLog("LIS setText " + baseName);
       loopBankPathLabel.setText("Loop Bank: " + baseName, NotificationType::dontSendNotification);
     }
 
@@ -2926,7 +2926,7 @@ private:
                                ppp,
                                undoManager)
         {
-            shew("Adding SamplerAudioProcessorEditor listener to dataModel");
+            //shew("Adding SamplerAudioProcessorEditor listener to dataModel");
             dataModel.addListener (*this);
             mpeSettings.addListener (*this);
 
@@ -2961,7 +2961,7 @@ private:
             setResizeLimits (320, 240, 2560, 1440);
             setSize (320, 240);
 
-            juce::Logger::getCurrentLogger()->writeToLog("SamplerAudioProcessorEditor()");
+            //juce::Logger::getCurrentLogger()->writeToLog("SamplerAudioProcessorEditor()");
         }
 
         ~SamplerAudioProcessorEditor() {
@@ -3108,7 +3108,7 @@ private:
 
     void loopBankChanged(std::shared_ptr<LoopBank> value) override
     {
-      juce::Logger::getCurrentLogger()->writeToLog("SAP dm listener got loop bank");
+      //juce::Logger::getCurrentLogger()->writeToLog("SAP dm listener got loop bank");
       setLoopBank(value);
     }
 

@@ -69,8 +69,6 @@ class ResamplingLoopStreamer {
       const float * const * readPtrs = src->getArrayOfReadPointers();
       float *const * writePtrs = dest.getArrayOfWritePointers();
 
-      float oeg = eg;
-
       bool just_advance = false;
       float eg_change_per_sample;
       float eg_end;

@@ -101,7 +101,6 @@
 		7BF0789B08B2CC79C1EB25DE /* include_juce_graphics_Sheenbidi.c */ /* include_juce_graphics_Sheenbidi.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = include_juce_graphics_Sheenbidi.c; path = ../../JuceLibraryCode/include_juce_graphics_Sheenbidi.c; sourceTree = SOURCE_ROOT; };
 		7C021B400959564D18B2622F /* Cocoa.framework */ /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7CC820C2480506EF4E541907 /* juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = "~/JUCE/modules/juce_gui_extra"; sourceTree = "<absolute>"; };
-		8176CEFABAE6BDD93C868AE2 /* LoopStreamer.h */ /* LoopStreamer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LoopStreamer.h; path = ../../Source/LoopStreamer.h; sourceTree = SOURCE_ROOT; };
 		81B267D905BEBB7F740ADF8D /* RecentFilesMenuTemplate.nib */ /* RecentFilesMenuTemplate.nib */ = {isa = PBXFileReference; lastKnownFileType = file.nib; name = RecentFilesMenuTemplate.nib; path = RecentFilesMenuTemplate.nib; sourceTree = SOURCE_ROOT; };
 		82CA257D9C01317FF4E327DC /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		84A48337C82D80CF1764E875 /* shew.h */ /* shew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = shew.h; path = ../../Source/shew.h; sourceTree = SOURCE_ROOT; };
@@ -309,7 +308,6 @@
 				84A48337C82D80CF1764E875,
 				4D5CD46845781C6959BF10F7,
 				94DBCCADD71BE5A7766CB83F,
-				8176CEFABAE6BDD93C868AE2,
 				EDB2DD5CB2C92C287D1409C3,
 			);
 			name = Source;

@@ -14,7 +14,6 @@
             file="Source/ResamplingLoopStreamer.h"/>
       <FILE id="UoEYKq" name="SamplerPluginDemo.h" compile="0" resource="0"
             file="Source/SamplerPluginDemo.h"/>
-      <FILE id="UVp2h9" name="LoopStreamer.h" compile="0" resource="0" file="Source/LoopStreamer.h"/>
       <FILE id="N6e5ek" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
     <GROUP id="l6AlhV" name="Assets">
