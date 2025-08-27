@@ -211,7 +211,7 @@ public:
     /* shew("ggg " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
   }
 
-  int size() {
+  size_t size() {
     return streamers->size();
   }
 
@@ -2122,9 +2122,9 @@ private:
         /*                        1.0f); */
 
         /* juce::Logger::getCurrentLogger()->writeToLog("bounds " + bounds.toString()); */
-        auto bounds0 = bounds / 2;
+        //auto bounds0 = bounds / 2;
         /* juce::Logger::getCurrentLogger()->writeToLog("bounds0 " + bounds0.toString()); */
-        auto bounds1 = bounds0.translated(bounds0.getWidth(), bounds0.getHeight());
+        //auto bounds1 = bounds0.translated(bounds0.getWidth(), bounds0.getHeight());
         /* juce::Logger::getCurrentLogger()->writeToLog("bounds1 " + bounds1.toString()); */
         int numWavs = (int) loopBankThumbnails.size();
         int gridSize = (int)ceil(sqrt((double)numWavs));
@@ -2907,10 +2907,10 @@ private:
         SamplerAudioProcessorEditor (
             AudioFormatManager &_fm, DataModel &_dm,
             SamplerAudioProcessor& p, ProcessorState state, ProcessorParams &ppp)
-            : formatManager(_fm),
-              dataModel(_dm),
-              AudioProcessorEditor (&p),
+            : AudioProcessorEditor (&p),
               samplerAudioProcessor (p),
+              formatManager(_fm),
+              dataModel(_dm),
               mainSamplerView (dataModel,
                                [&p]
                                {
@@ -3177,13 +3177,13 @@ private:
           loopBank->stream(pio, sampleRate, buffer);
         }
 
-        int time;
+        //int time;
         juce::MidiMessage m;
      
-        for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);) {
-          // juce::Logger::getCurrentLogger()->writeToLog("midi " + m.getDescription());
-          if (loopBank != NULL) {
-            loopBank->update(m);
+        if (loopBank != NULL) {
+          for (const auto metadata : midiMessages) {
+            juce::MidiMessage m = metadata.getMessage();
+              loopBank->update(m);
           }
         }
         midiMessages.clear();
