@@ -121,6 +121,7 @@
 		AF54AD84E0C4E20EC7A5D948 /* DiscRecording.framework */ /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
 		B02602FEF14DD42F60DFA179 /* VST3 Manifest Helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = juce_vst3_helper; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0727A43265A19992A213C49 /* AudioUnit.framework */ /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		B08BC5AD28853428B1C0DB20 /* Loopo.h */ /* Loopo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Loopo.h; path = ../../Source/Loopo.h; sourceTree = SOURCE_ROOT; };
 		B4C0C1C6E7A94880BEAA1C5E /* Info-VST3_Manifest_Helper.plist */ /* Info-VST3_Manifest_Helper.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-VST3_Manifest_Helper.plist"; path = "Info-VST3_Manifest_Helper.plist"; sourceTree = SOURCE_ROOT; };
 		B766D2E18E84A045A20094A5 /* include_juce_audio_plugin_client_AU_1.mm */ /* include_juce_audio_plugin_client_AU_1.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_plugin_client_AU_1.mm; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_AU_1.mm; sourceTree = SOURCE_ROOT; };
 		B796C0825AB749B9C8F6A850 /* include_juce_graphics.mm */ /* include_juce_graphics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_graphics.mm; path = ../../JuceLibraryCode/include_juce_graphics.mm; sourceTree = SOURCE_ROOT; };
@@ -306,6 +307,7 @@
 			children = (
 				9B01FE5111843F65865FA4B2,
 				84A48337C82D80CF1764E875,
+				B08BC5AD28853428B1C0DB20,
 				4D5CD46845781C6959BF10F7,
 				94DBCCADD71BE5A7766CB83F,
 				EDB2DD5CB2C92C287D1409C3,

@@ -1,3 +1,4 @@
+#include "Loopo.h"
 #include "shew.h"
 
 #include "DemoUtilities.h"
@@ -14,7 +15,7 @@
 #include <mutex>
 
 #define LOGFILE "/tmp/loopo.log"
-const bool enableShew = true;
+const bool enableShew = !PROD;
 FileLogger *shew_fl = nullptr;
 
 void shew(const String &s) {
