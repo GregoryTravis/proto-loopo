@@ -10,6 +10,10 @@
 //namespace juce {
 
 const double DEFAULT_BPM = 120.0;
+// Time taken to go from 0 to 1 during attack
+const double ATTACK_DURATION_S = 0.001;
+// Time taken to go from 1 to 0 during release
+const double RELEASE_DURATION_S = 0.05;
 
 // When a note is first turned on, it is set to asr_as and the envelope gain (EG) is set to 0.
 // When a note is first turned off, it is set to asr_r.
@@ -28,6 +32,8 @@ enum ASR {
   // Done
   asr_off
 };
+
+#define s(x) std::to_string(x)
 
 class ResamplingLoopStreamer {
   public:
@@ -63,37 +69,67 @@ class ResamplingLoopStreamer {
       const float * const * readPtrs = src->getArrayOfReadPointers();
       float *const * writePtrs = dest.getArrayOfWritePointers();
 
-      // We do this many resample steps. The usual cases (1 or 2 onto 1 or 2) make sense,
-      // anything else is weird but what are you gonna do?
-      int numSteps = std::max(srcNumChannels, destNumChannels);
-      for (int stepIndex = 0; stepIndex < numSteps; ++stepIndex) {
-        int readPtrIndex = stepIndex % srcNumChannels;
-        int writePtrIndex = stepIndex % destNumChannels;
+      float oeg = eg;
 
-        const float * readPtr = readPtrs[readPtrIndex];
-        float * writePtr = writePtrs[writePtrIndex];
-
-        /*
-        shew("ptrs " +
-            std::to_string((int64)readPtrA) + " " + std::to_string((int64)readPtrI) + " " +
-            std::to_string((int64)writePtrA) + " " + std::to_string((int64)writePtrI) + " " +
-            std::to_string(readPtrA == writePtrA) + " " +
-            std::to_string(readPtrI == writePtrI));
-            */
-
-        /* const float * readPtr2 = readPtrs[readPtrIndex]; */
-
-        /* shew("stream " + std::to_string(numSteps) + " " + std::to_string(stepIndex) + " " + std::to_string(readPtrIndex) + " " + */
-        /*       std::to_string(writePtrIndex)); */
-        stream(sampleRate, readPtr, writePtr, destNumSamples);
-
-        /* shew("ggg2 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
-        /* writePtr[0] = 14 + stepIndex; */
-        /* shew("ggg22 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
-        /* dest.getWritePointer(writePtrIndex)[0] = 41 + stepIndex; */
-        /* shew("ggg23 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
-        /* shew("ggg3 " + std::to_string(readPtr2[9])); */
+      bool just_advance = false;
+      float eg_change_per_sample;
+      float eg_end;
+      if (asr == asr_as) {
+        // How long to go from 0 to 1, in samples
+        float attack_duration_samp = ATTACK_DURATION_S * sampleRate;
+        eg_change_per_sample = 1.0 / attack_duration_samp;
+        eg_end = std::fmin(1.0, eg + (eg_change_per_sample * destNumSamples));
+      } else if (asr == asr_r) {
+        // How long to go from 1 to 0, in samples
+        float attack_duration_samp = RELEASE_DURATION_S * sampleRate;
+        eg_change_per_sample = -1.0 / attack_duration_samp;
+        eg_end = std::fmax(0.0, eg + (eg_change_per_sample * destNumSamples));
+      } else {
+        just_advance = true;
       }
+
+      if (!just_advance) {
+        // We do this many resample steps. The usual cases (1 or 2 onto 1 or 2) make sense,
+        // anything else is weird but what are you gonna do?
+        int numSteps = std::fmax(srcNumChannels, destNumChannels);
+        for (int stepIndex = 0; stepIndex < numSteps; ++stepIndex) {
+          int readPtrIndex = stepIndex % srcNumChannels;
+          int writePtrIndex = stepIndex % destNumChannels;
+
+          const float * readPtr = readPtrs[readPtrIndex];
+          float * writePtr = writePtrs[writePtrIndex];
+
+          /*
+          shew("ptrs " +
+              std::to_string((int64)readPtrA) + " " + std::to_string((int64)readPtrI) + " " +
+              std::to_string((int64)writePtrA) + " " + std::to_string((int64)writePtrI) + " " +
+              std::to_string(readPtrA == writePtrA) + " " +
+              std::to_string(readPtrI == writePtrI));
+              */
+
+          /* const float * readPtr2 = readPtrs[readPtrIndex]; */
+
+          /* shew("stream " + std::to_string(numSteps) + " " + std::to_string(stepIndex) + " " + std::to_string(readPtrIndex) + " " + */
+          /*       std::to_string(writePtrIndex)); */
+          stream(sampleRate, readPtr, writePtr, destNumSamples, eg_change_per_sample);
+
+          /* shew("ggg2 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
+          /* writePtr[0] = 14 + stepIndex; */
+          /* shew("ggg22 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
+          /* dest.getWritePointer(writePtrIndex)[0] = 41 + stepIndex; */
+          /* shew("ggg23 " + std::to_string(dest.getSample(0, 0)) + " " +  std::to_string(dest.getSample(1, 0))); */
+          /* shew("ggg3 " + std::to_string(readPtr2[9])); */
+        }
+
+        eg = eg_end;
+      }
+
+      // When EG reaches <= 0 in asr_r, it goes into state asr_off
+      if (asr == asr_r && eg <= 0.0) {
+        asr = asr_off;
+      }
+
+      //shew("eg " + std::to_string(eg) + " " + std::to_string(eg_end) + " " + std::to_string(eg_change_per_sample));
 
       timeInSamples += dest.getNumSamples();
 
@@ -123,7 +159,7 @@ class ResamplingLoopStreamer {
     }
 
   private:
-    void stream(double sampleRate, const float *readPtr, float *writePtr, int destNumSamples) {
+    void stream(double sampleRate, const float *readPtr, float *writePtr, int destNumSamples, float eg_change_per_sample) {
       // TODO move some of this outwards?
       int beatsPerLoop = 4;
       double loopsPerMinute = bpm / beatsPerLoop;
@@ -133,6 +169,8 @@ class ResamplingLoopStreamer {
       // Quantizing this value only because I can't quite wrap my head around
       // not doing it, but it would probably work fine. TODO: try it.
       int samplesPerLoop = (int) samplesPerLoopD;
+
+      float leg = eg;
 
       for (int64 i = 0; i < destNumSamples; ++i) {
         // TODO incrementalize
@@ -171,7 +209,14 @@ class ResamplingLoopStreamer {
         /* shew("samp tisil " + std::to_string(timeInSamplesInLoop) + " swsl " + std::to_string(sampleWithinSrcLoop) + " ints " + std::to_string(swslI) + " " + std::to_string(swslI2) + " swslF " + */
         /*     std::to_string(swslF) + " vals " + std::to_string(s) + " " + std::to_string(s2) + " "+ std::to_string(interp)); */
 
-        writePtr[i] += interp;
+        //shew("leg " + s(i) + " " + s(leg));
+        writePtr[i] += leg * interp;
+
+        if (asr == asr_as) {
+          leg = std::fmin(1.0, leg + eg_change_per_sample);
+        } else if (asr == asr_r) {
+          leg = std::fmax(0.0, leg + eg_change_per_sample);
+        }
       }
     }
 

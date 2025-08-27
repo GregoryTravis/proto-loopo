@@ -129,6 +129,7 @@ std::vector<AudioBuffer<float>*> *readLoopDir(const String dirname) {
       /* juce::Logger::getCurrentLogger()->writeToLog("reading " + entry.getFile().getFullPathName()); */
       //shew("scanning " + entry.getFile().getFullPathName());
       fullPaths.push_back(String(entry.getFile().getFullPathName()));
+      //break;
     }
     std::sort(fullPaths.begin(), fullPaths.end());
 
