@@ -162,7 +162,7 @@ public:
   LoopBank(const String dn)
     : dirName(dn)
   {
-    std::vector<AudioBuffer<float>*> *abs = readLoopDir(dirName);
+    abs = readLoopDir(dirName);
     streamers = new std::vector<ResamplingLoopStreamer*>();
     /* ons = new std::vector<bool>(abs->size(), false); */
 
@@ -170,7 +170,7 @@ public:
       streamers->push_back(new ResamplingLoopStreamer(ab));
     }
 
-    delete abs;
+    //delete abs;
   }
 
   void update(juce::MidiMessage &m) {
